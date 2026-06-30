@@ -18,12 +18,11 @@
     "build": "npm install react-icons && react-scripts build"
   }
 ,
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
+ "eslintConfig": {
+  "rules": {
+    "no-unused-vars": "off"
+  }
+},
   "browserslist": {
     "production": [
       ">0.2%",

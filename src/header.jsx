@@ -1,26 +1,58 @@
-import React, { useState, useEffect } from 'react';
-import { NavLink, Link, useLocation } from 'react-router-dom';
+import React, { useState, useEffect, useCallback } from 'react';
+import { Link, NavLink } from 'react-router-dom';
 import { FaBars, FaTimes, FaCode } from 'react-icons/fa';
+
+/* ---------- Hook : détecte le breakpoint mobile ---------- */
+const useMediaQuery = (query) => {
+  const [matches, setMatches] = useState(() =>
+    typeof window !== 'undefined' ? window.matchMedia(query).matches : false
+  );
+
+  useEffect(() => {
+    const mql = window.matchMedia(query);
+    const handler = (e) => setMatches(e.matches);
+    setMatches(mql.matches);
+    mql.addEventListener('change', handler);
+    return () => mql.removeEventListener('change', handler);
+  }, [query]);
+
+  return matches;
+};
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const location = useLocation();
 
-  // Scroll effect
+  // Breakpoint mobile (768px)
+  const isMobile = useMediaQuery('(max-width: 768px)');
+
+  /* ---------- Scroll ---------- */
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-    };
-
-    window.addEventListener('scroll', handleScroll);
+    const handleScroll = () => setScrolled(window.scrollY > 50);
+    handleScroll();
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  // Close menu on route change
+  /* ---------- Ferme le menu si on repasse en desktop ---------- */
   useEffect(() => {
-    setIsMenuOpen(false);
-  }, [location.pathname]);
+    if (!isMobile) setIsMenuOpen(false);
+  }, [isMobile]);
+
+  /* ---------- Bloque le scroll du body quand le menu est ouvert ---------- */
+  useEffect(() => {
+    document.body.style.overflow = isMenuOpen ? 'hidden' : '';
+    return () => { document.body.style.overflow = ''; };
+  }, [isMenuOpen]);
+
+  /* ---------- Ferme avec la touche Escape ---------- */
+  useEffect(() => {
+    const onKey = (e) => e.key === 'Escape' && setIsMenuOpen(false);
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
+
+  const toggleMenu = useCallback(() => setIsMenuOpen((v) => !v), []);
 
   const navLinks = [
     { path: '/', label: 'Accueil' },
@@ -31,166 +63,213 @@ const Header = () => {
     { path: '/contact', label: 'Contact' },
   ];
 
+  /* ------------------ Styles inline (inchangés dans l'esprit) ------------------ */
   const styles = {
     header: {
       position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
+      top: 0, left: 0, right: 0,
       zIndex: 1000,
       background: scrolled ? 'rgba(10,10,10,0.95)' : 'rgba(10,10,10,0.85)',
       backdropFilter: 'blur(20px)',
-      padding: '0.8rem 0',
+      WebkitBackdropFilter: 'blur(20px)',
       borderBottom: scrolled ? '1px solid rgba(255,255,255,0.05)' : 'none',
-      transition: '0.3s ease',
+      transition: 'all 0.4s ease',
+      padding: scrolled ? '0.6rem 0' : '1rem 0',
     },
-
     container: {
       maxWidth: '1200px',
-      margin: 'auto',
-      padding: '0 20px',
+      margin: '0 auto',
+      padding: '0 1.5rem',
       display: 'flex',
       justifyContent: 'space-between',
       alignItems: 'center',
+      gap: '1rem',
     },
-
     logo: {
       display: 'flex',
       alignItems: 'center',
-      gap: '10px',
-      color: '#fff',
+      gap: '0.7rem',
       textDecoration: 'none',
-      fontWeight: '700',
-      fontSize: '1.3rem',
+      color: '#ffffff',
+      fontSize: isMobile ? '1.2rem' : '1.5rem',
+      fontWeight: 700,
     },
-
-    nav: {
+    logoIcon: {
       display: 'flex',
-      gap: '25px',
+      alignItems: 'center',
+      justifyContent: 'center',
+      width: isMobile ? 32 : 40,
+      height: isMobile ? 32 : 40,
+      borderRadius: 8,
+      background: 'linear-gradient(135deg, #ffffff, #888888)',
+      color: '#0a0a0a',
+      fontSize: isMobile ? '0.9rem' : '1.2rem',
     },
-
-    link: {
-      color: '#aaa',
+    logoDot: { color: '#888888' },
+    nav: {
+      display: isMobile ? 'none' : 'flex',
+      alignItems: 'center',
+      gap: '2rem',
+    },
+    navLink: {
+      color: '#888888',
       textDecoration: 'none',
-      fontWeight: '500',
-      transition: '0.3s',
+      fontSize: '0.95rem',
+      fontWeight: 500,
+      padding: '0.5rem 0',
+      position: 'relative',
+      transition: 'color 0.3s ease',
     },
-
-    mobileBtn: {
-      display: 'none',
-      fontSize: '1.5rem',
+    navLinkActive: { color: '#ffffff' },
+    navLinkUnderline: {
+      position: 'absolute',
+      bottom: -2, left: 0,
+      width: 0, height: 2,
+      background: '#ffffff',
+      transition: 'width 0.3s ease',
+    },
+    navLinkUnderlineActive: { width: '100%' },
+    hamburger: {
+      display: isMobile ? 'flex' : 'none',
       background: 'none',
       border: 'none',
-      color: '#fff',
+      color: '#ffffff',
+      fontSize: '1.5rem',
       cursor: 'pointer',
+      padding: '0.5rem',
+      alignItems: 'center',
+      justifyContent: 'center',
+      zIndex: 1001,
     },
-
-    mobileMenu: {
-      position: 'fixed',
-      top: 0,
-      right: isMenuOpen ? 0 : '-100%',
-      width: '260px',
-      height: '100vh',
-      background: '#0a0a0a',
-      padding: '80px 20px',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '15px',
-      transition: '0.3s ease',
-      zIndex: 999,
-    },
-
-    mobileLink: {
-      color: '#aaa',
-      textDecoration: 'none',
-      fontSize: '1.1rem',
-      padding: '10px',
-      borderBottom: '1px solid rgba(255,255,255,0.05)',
-    },
-
     overlay: {
       position: 'fixed',
-      top: 0,
-      left: 0,
-      right: 0,
-      bottom: 0,
-      background: 'rgba(0,0,0,0.5)',
-      display: isMenuOpen ? 'block' : 'none',
-      zIndex: 998,
+      inset: 0,
+      background: 'rgba(0,0,0,0.6)',
+      zIndex: 999,
+      animation: 'fadeIn 0.3s ease',
+    },
+    mobileMenu: {
+      position: 'fixed',
+      top: 0, right: 0,
+      width: 'min(280px, 85vw)',
+      height: '100dvh',
+      background: 'rgba(10,10,10,0.98)',
+      backdropFilter: 'blur(20px)',
+      WebkitBackdropFilter: 'blur(20px)',
+      padding: '80px 2rem 2rem',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '0.5rem',
+      borderLeft: '1px solid rgba(255,255,255,0.05)',
+      zIndex: 1000,
+      transform: isMenuOpen ? 'translateX(0)' : 'translateX(100%)',
+      opacity: isMenuOpen ? 1 : 0,
+      transition: 'transform 0.3s ease, opacity 0.3s ease',
+      pointerEvents: isMenuOpen ? 'auto' : 'none',
+    },
+    mobileLink: {
+      color: '#888888',
+      textDecoration: 'none',
+      fontSize: '1.1rem',
+      fontWeight: 500,
+      padding: '0.8rem 0.5rem',
+      borderBottom: '1px solid rgba(255,255,255,0.03)',
+      transition: 'all 0.3s ease',
+      display: 'block',
+    },
+    mobileLinkActive: {
+      color: '#ffffff',
+      paddingLeft: '1rem',
+      borderLeft: '3px solid #ffffff',
     },
   };
 
+  const animationStyles = `
+    @keyframes fadeIn { from { opacity: 0 } to { opacity: 1 } }
+  `;
+
   return (
-    <header style={styles.header}>
-      <div style={styles.container}>
+    <>
+      <style>{animationStyles}</style>
 
-        {/* LOGO */}
-        <Link to="/" style={styles.logo}>
-          <FaCode />
-          SIHAM
-        </Link>
+      {/* Overlay mobile */}
+      {isMobile && isMenuOpen && (
+        <div style={styles.overlay} onClick={() => setIsMenuOpen(false)} />
+      )}
 
-        {/* NAV DESKTOP */}
-        <nav style={styles.nav} className="desktop-nav">
-          {navLinks.map((link) => (
-            <NavLink
-              key={link.path}
-              to={link.path}
-              style={({ isActive }) => ({
-                ...styles.link,
-                color: isActive ? '#fff' : '#aaa',
-              })}
+      <header style={styles.header}>
+        <div style={styles.container}>
+          <Link to="/" style={styles.logo} onClick={() => setIsMenuOpen(false)}>
+            <div style={styles.logoIcon}><FaCode /></div>
+            <span>SI<span style={styles.logoDot}>.</span>HAM</span>
+          </Link>
+
+          {/* Navigation desktop */}
+          {!isMobile && (
+            <nav style={styles.nav}>
+              {navLinks.map((link) => (
+                <NavLink
+                  key={link.path}
+                  to={link.path}
+                  end={link.path === '/'}
+                  style={({ isActive }) => ({
+                    ...styles.navLink,
+                    ...(isActive ? styles.navLinkActive : {}),
+                  })}
+                >
+                  {({ isActive }) => (
+                    <>
+                      {link.label}
+                      <span
+                        style={{
+                          ...styles.navLinkUnderline,
+                          ...(isActive ? styles.navLinkUnderlineActive : {}),
+                        }}
+                      />
+                    </>
+                  )}
+                </NavLink>
+              ))}
+            </nav>
+          )}
+
+          {/* Bouton hamburger (mobile uniquement) */}
+          {isMobile && (
+            <button
+              style={styles.hamburger}
+              onClick={toggleMenu}
+              aria-label={isMenuOpen ? 'Fermer le menu' : 'Ouvrir le menu'}
+              aria-expanded={isMenuOpen}
             >
-              {link.label}
-            </NavLink>
-          ))}
-        </nav>
+              {isMenuOpen ? <FaTimes /> : <FaBars />}
+            </button>
+          )}
 
-        {/* BUTTON MOBILE */}
-        <button
-          style={styles.mobileBtn}
-          onClick={() => setIsMenuOpen(!isMenuOpen)}
-        >
-          {isMenuOpen ? <FaTimes /> : <FaBars />}
-        </button>
-
-      </div>
-
-      {/* OVERLAY */}
-      <div
-        style={styles.overlay}
-        onClick={() => setIsMenuOpen(false)}
-      />
-
-      {/* MOBILE MENU */}
-      <div style={styles.mobileMenu}>
-        {navLinks.map((link) => (
-          <NavLink
-            key={link.path}
-            to={link.path}
-            style={styles.mobileLink}
-            onClick={() => setIsMenuOpen(false)}
-          >
-            {link.label}
-          </NavLink>
-        ))}
-      </div>
-
-      {/* RESPONSIVE CSS */}
-      <style>
-        {`
-          @media (max-width: 768px) {
-            .desktop-nav {
-              display: none;
-            }
-
-            button {
-              display: block !important;
-            }
-          }
-        `}
-      </style>
-    </header>
+          {/* Menu mobile latéral */}
+          {isMobile && (
+            <nav
+              style={styles.mobileMenu}
+              aria-hidden={!isMenuOpen}
+            >
+              {navLinks.map((link) => (
+                <NavLink
+                  key={link.path}
+                  to={link.path}
+                  end={link.path === '/'}
+                  onClick={() => setIsMenuOpen(false)}
+                  style={({ isActive }) => ({
+                    ...styles.mobileLink,
+                    ...(isActive ? styles.mobileLinkActive : {}),
+                  })}
+                >
+                  {link.label}
+                </NavLink>
+              ))}
+            </nav>
+          )}
+        </div>
+      </header>
+    </>
   );
 };
 

@@ -1,7 +1,12 @@
-import React, { useState } from 'react';
-import { FaEnvelope, FaPhone, FaMapMarker, FaGithub, FaLinkedin, FaTwitter, FaWhatsapp, FaTelegram, FaPaperPlane, FaCheck, FaSpinner } from 'react-icons/fa';
+import React, { useState, useEffect } from 'react';
+import { 
+  FaEnvelope, FaPhone, FaMapMarkerAlt, FaLinkedin, FaInstagram,
+  FaPaperPlane, FaCheck, FaSpinner,
+  FaWhatsapp, FaClock, FaUser, FaComment, FaTag
+} from 'react-icons/fa';
 
 const Contact = () => {
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -10,524 +15,755 @@ const Contact = () => {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [errors, setErrors] = useState({});
+  const [focusedField, setFocusedField] = useState(null);
+  const [hoveredCard, setHoveredCard] = useState(null);
 
-  // Styles
+  // ⚠️ TON NUMÉRO WHATSAPP (format international sans + ni espaces)
+  const WHATSAPP_NUMBER = '212601263349';
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const isMobile = windowWidth < 768;
+  const isTablet = windowWidth >= 768 && windowWidth < 1024;
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+  };
+
+  // 🚀 NOUVELLE FONCTION : Envoie le message vers WhatsApp
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    // Construction du message WhatsApp formaté
+    const whatsappMessage = 
+      `*Nouveau message depuis le portfolio*%0A%0A` +
+      `👤 *Nom :* ${formData.name}%0A` +
+      `📧 *Email :* ${formData.email}%0A` +
+      `📝 *Sujet :* ${formData.subject}%0A%0A` +
+      `💬 *Message :*%0A${formData.message}`;
+
+    // URL WhatsApp
+    const whatsappUrl = `https://wa.me/${WHATSAPP_NUMBER}?text=${whatsappMessage}`;
+
+    // Petite animation de 1s puis ouverture de WhatsApp
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setIsSubmitted(true);
+      
+      // Ouvre WhatsApp dans un nouvel onglet
+      window.open(whatsappUrl, '_blank');
+      
+      // Réinitialise le formulaire
+      setFormData({ name: '', email: '', subject: '', message: '' });
+    }, 1000);
+  };
+
   const styles = {
     container: {
       minHeight: '100vh',
-      padding: '120px 20px 80px',
-      background: '#0a0a0a',
-      fontFamily: "'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
+      padding: isMobile ? '80px 16px 40px' : isTablet ? '100px 24px 60px' : '120px 40px 80px',
+      background: 'linear-gradient(145deg, #0a0e27 0%, #1a1f3a 50%, #0d1230 100%)',
+      color: '#fff',
+      fontFamily: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+      position: 'relative',
+      overflow: 'hidden'
     },
+
+    backgroundDecoration: {
+      position: 'absolute',
+      top: 0, left: 0, right: 0, bottom: 0,
+      background: `
+        radial-gradient(circle at 20% 30%, rgba(0, 198, 255, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 80% 70%, rgba(0, 114, 255, 0.08) 0%, transparent 50%),
+        radial-gradient(circle at 50% 50%, rgba(139, 92, 246, 0.05) 0%, transparent 70%)
+      `,
+      pointerEvents: 'none'
+    },
+
     wrapper: {
-      maxWidth: '1100px',
+      maxWidth: '1200px',
       margin: '0 auto',
+      position: 'relative',
+      zIndex: 1,
+      animation: 'fadeInUp 0.8s ease-out'
     },
+
     header: {
       textAlign: 'center',
-      marginBottom: '3rem',
+      marginBottom: isMobile ? '40px' : '60px'
     },
-    title: {
-      fontSize: '2.8rem',
-      fontWeight: '800',
-      color: '#ffffff',
-      marginBottom: '0.5rem',
-      letterSpacing: '-1px',
-    },
-    subtitle: {
-      fontSize: '1.1rem',
-      color: '#888888',
-      maxWidth: '500px',
-      margin: '0 auto',
-      lineHeight: '1.6',
-    },
+
     badge: {
-      display: 'inline-block',
-      padding: '0.4rem 1.2rem',
-      background: 'rgba(255, 255, 255, 0.05)',
-      border: '1px solid rgba(255, 255, 255, 0.1)',
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '8px',
+      padding: '8px 16px',
       borderRadius: '50px',
-      fontSize: '0.75rem',
+      background: 'rgba(0, 198, 255, 0.1)',
+      border: '1px solid rgba(0, 198, 255, 0.2)',
+      color: '#00c6ff',
+      fontSize: isMobile ? '0.75rem' : '0.85rem',
       fontWeight: '600',
+      letterSpacing: '0.5px',
       textTransform: 'uppercase',
-      letterSpacing: '2px',
-      color: '#ffffff',
-      marginBottom: '1rem',
+      marginBottom: '20px'
     },
+
+    title: {
+      fontSize: isMobile ? '2rem' : isTablet ? '2.8rem' : '3.5rem',
+      fontWeight: '800',
+      textAlign: 'center',
+      marginBottom: '16px',
+      background: 'linear-gradient(135deg, #ffffff 0%, #a0aec0 100%)',
+      WebkitBackgroundClip: 'text',
+      WebkitTextFillColor: 'transparent',
+      backgroundClip: 'text',
+      lineHeight: 1.2
+    },
+
+    subtitle: {
+      fontSize: isMobile ? '0.95rem' : '1.1rem',
+      color: 'rgba(255,255,255,0.6)',
+      textAlign: 'center',
+      maxWidth: '600px',
+      margin: '0 auto',
+      lineHeight: 1.6,
+      padding: isMobile ? '0 10px' : '0'
+    },
+
     grid: {
       display: 'grid',
-      gridTemplateColumns: '1fr 1.5fr',
-      gap: '3rem',
+      gridTemplateColumns: isMobile ? '1fr' : isTablet ? '1fr' : '1fr 1.4fr',
+      gap: isMobile ? '20px' : '32px',
+      alignItems: 'start'
     },
-    // Info Section
-    infoSection: {
+
+    leftColumn: {
       display: 'flex',
       flexDirection: 'column',
-      gap: '1.5rem',
+      gap: '16px'
     },
+
     infoCard: {
-      background: '#1a1a1a',
-      borderRadius: '16px',
-      padding: '1.5rem',
-      border: '1px solid rgba(255, 255, 255, 0.05)',
-      transition: 'all 0.3s ease',
-    },
-    infoItem: {
       display: 'flex',
-      alignItems: 'flex-start',
-      gap: '1rem',
+      alignItems: 'center',
+      gap: '16px',
+      padding: isMobile ? '16px' : '20px',
+      background: 'rgba(255,255,255,0.03)',
+      backdropFilter: 'blur(20px)',
+      borderRadius: '16px',
+      border: '1px solid rgba(255,255,255,0.08)',
+      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
+      textDecoration: 'none',
+      color: 'inherit'
     },
-    infoIcon: {
-      width: '48px',
-      height: '48px',
-      minWidth: '48px',
-      borderRadius: '12px',
-      background: 'rgba(255, 255, 255, 0.05)',
+
+    infoCardHover: {
+      background: 'rgba(255,255,255,0.06)',
+      borderColor: 'rgba(0, 198, 255, 0.3)',
+      transform: 'translateX(8px)',
+      boxShadow: '0 8px 32px rgba(0, 198, 255, 0.1)'
+    },
+
+    iconWrapper: {
+      width: isMobile ? '44px' : '52px',
+      height: isMobile ? '44px' : '52px',
+      borderRadius: '14px',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      color: '#ffffff',
-      fontSize: '1.2rem',
+      background: 'linear-gradient(135deg, rgba(0, 198, 255, 0.15), rgba(0, 114, 255, 0.15))',
+      color: '#00c6ff',
+      fontSize: isMobile ? '1.1rem' : '1.3rem',
+      flexShrink: 0
     },
-    infoContent: {
-      flex: 1,
-    },
+
+    infoContent: { flex: 1, minWidth: 0 },
+
     infoLabel: {
       fontSize: '0.75rem',
-      fontWeight: '600',
+      color: 'rgba(255,255,255,0.4)',
       textTransform: 'uppercase',
       letterSpacing: '1px',
-      color: '#666666',
-      marginBottom: '0.2rem',
+      marginBottom: '4px',
+      fontWeight: '600'
     },
+
     infoValue: {
-      fontSize: '1rem',
-      color: '#ffffff',
-      textDecoration: 'none',
-      transition: 'color 0.3s ease',
+      fontSize: isMobile ? '0.9rem' : '1rem',
+      color: '#fff',
+      fontWeight: '500',
+      wordBreak: 'break-word'
     },
-    infoValueLink: {
-      fontSize: '1rem',
-      color: '#ffffff',
-      textDecoration: 'none',
-      transition: 'color 0.3s ease',
-    },
-    // Social Section
+
     socialSection: {
-      background: '#1a1a1a',
+      padding: isMobile ? '20px' : '24px',
+      background: 'rgba(255,255,255,0.03)',
+      backdropFilter: 'blur(20px)',
       borderRadius: '16px',
-      padding: '1.5rem',
-      border: '1px solid rgba(255, 255, 255, 0.05)',
+      border: '1px solid rgba(255,255,255,0.08)'
     },
+
     socialTitle: {
-      fontSize: '0.9rem',
-      color: '#888888',
-      marginBottom: '1rem',
-      fontWeight: '600',
+      fontSize: '0.8rem',
+      color: 'rgba(255,255,255,0.4)',
+      textTransform: 'uppercase',
+      letterSpacing: '1px',
+      marginBottom: '16px',
+      fontWeight: '600'
     },
+
     socialGrid: {
       display: 'grid',
-      gridTemplateColumns: 'repeat(3, 1fr)',
-      gap: '0.8rem',
+      gridTemplateColumns: 'repeat(2, 1fr)',
+      gap: '10px'
     },
-    socialLink: {
+
+    socialButton: {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      gap: '0.5rem',
-      padding: '0.8rem',
-      background: 'rgba(255, 255, 255, 0.03)',
-      borderRadius: '10px',
-      color: '#888888',
-      textDecoration: 'none',
-      transition: 'all 0.3s ease',
-      fontSize: '0.85rem',
-    },
-    // Form Section
-    formSection: {
-      background: '#1a1a1a',
-      borderRadius: '16px',
-      padding: '2rem',
-      border: '1px solid rgba(255, 255, 255, 0.05)',
-    },
-    formTitle: {
-      fontSize: '1.3rem',
-      color: '#ffffff',
-      marginBottom: '0.5rem',
-      fontWeight: '700',
-    },
-    formSubtitle: {
-      fontSize: '0.9rem',
-      color: '#888888',
-      marginBottom: '1.5rem',
-    },
-    formGroup: {
-      marginBottom: '1.2rem',
-    },
-    label: {
-      display: 'block',
-      fontSize: '0.85rem',
+      gap: '10px',
+      padding: isMobile ? '12px' : '14px',
+      borderRadius: '12px',
+      background: 'rgba(255,255,255,0.05)',
+      border: '1px solid rgba(255,255,255,0.08)',
+      color: 'rgba(255,255,255,0.7)',
+      fontSize: isMobile ? '0.85rem' : '0.9rem',
       fontWeight: '600',
-      color: '#cccccc',
-      marginBottom: '0.4rem',
+      cursor: 'pointer',
+      transition: 'all 0.3s ease',
+      textDecoration: 'none'
     },
+
+    socialButtonHover: {
+      background: 'rgba(0, 198, 255, 0.15)',
+      borderColor: 'rgba(0, 198, 255, 0.3)',
+      color: '#00c6ff',
+      transform: 'translateY(-3px)',
+      boxShadow: '0 6px 20px rgba(0, 198, 255, 0.15)'
+    },
+
+    whatsappBtn: {
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      gap: '10px',
+      marginTop: '4px',
+      padding: isMobile ? '14px' : '16px',
+      borderRadius: '16px',
+      background: 'linear-gradient(135deg, #25D366, #128C7E)',
+      color: '#fff',
+      textDecoration: 'none',
+      fontWeight: '600',
+      fontSize: isMobile ? '0.9rem' : '0.95rem',
+      transition: 'all 0.3s ease',
+      boxShadow: '0 4px 15px rgba(37, 211, 102, 0.3)',
+      border: 'none',
+      cursor: 'pointer'
+    },
+
+    whatsappBtnHover: {
+      transform: 'translateY(-2px)',
+      boxShadow: '0 8px 25px rgba(37, 211, 102, 0.4)'
+    },
+
+    formCard: {
+      padding: isMobile ? '20px' : '32px',
+      background: 'rgba(255,255,255,0.03)',
+      backdropFilter: 'blur(20px)',
+      borderRadius: '20px',
+      border: '1px solid rgba(255,255,255,0.08)',
+      boxShadow: '0 20px 60px rgba(0,0,0,0.3)'
+    },
+
+    formTitle: {
+      fontSize: isMobile ? '1.2rem' : '1.4rem',
+      fontWeight: '700',
+      marginBottom: '8px',
+      color: '#fff'
+    },
+
+    formSubtitle: {
+      fontSize: '0.85rem',
+      color: 'rgba(255,255,255,0.4)',
+      marginBottom: isMobile ? '24px' : '32px'
+    },
+
+    inputGroup: { marginBottom: isMobile ? '16px' : '20px' },
+
+    inputLabel: {
+      display: 'flex',
+      alignItems: 'center',
+      gap: '8px',
+      fontSize: '0.8rem',
+      color: 'rgba(255,255,255,0.5)',
+      marginBottom: '8px',
+      fontWeight: '500'
+    },
+
     input: {
       width: '100%',
-      padding: '0.9rem 1rem',
-      background: 'rgba(255, 255, 255, 0.05)',
-      border: '1px solid rgba(255, 255, 255, 0.1)',
-      borderRadius: '10px',
-      color: '#ffffff',
-      fontSize: '0.95rem',
-      transition: 'all 0.3s ease',
+      padding: isMobile ? '14px' : '16px',
+      borderRadius: '12px',
+      border: '1px solid rgba(255,255,255,0.1)',
+      background: 'rgba(255,255,255,0.04)',
+      color: '#fff',
+      fontSize: isMobile ? '0.9rem' : '0.95rem',
       outline: 'none',
-      boxSizing: 'border-box',
+      transition: 'all 0.3s ease',
+      fontFamily: 'inherit',
+      boxSizing: 'border-box'
     },
-    inputError: {
-      borderColor: '#ff4444',
+
+    inputFocus: {
+      borderColor: 'rgba(0, 198, 255, 0.5)',
+      background: 'rgba(255,255,255,0.06)',
+      boxShadow: '0 0 0 4px rgba(0, 198, 255, 0.1)'
     },
+
     textarea: {
       width: '100%',
-      padding: '0.9rem 1rem',
-      background: 'rgba(255, 255, 255, 0.05)',
-      border: '1px solid rgba(255, 255, 255, 0.1)',
-      borderRadius: '10px',
-      color: '#ffffff',
-      fontSize: '0.95rem',
-      transition: 'all 0.3s ease',
+      padding: isMobile ? '14px' : '16px',
+      minHeight: isMobile ? '120px' : '150px',
+      borderRadius: '12px',
+      border: '1px solid rgba(255,255,255,0.1)',
+      background: 'rgba(255,255,255,0.04)',
+      color: '#fff',
+      fontSize: isMobile ? '0.9rem' : '0.95rem',
       outline: 'none',
+      transition: 'all 0.3s ease',
       resize: 'vertical',
-      minHeight: '120px',
       fontFamily: 'inherit',
-      boxSizing: 'border-box',
+      boxSizing: 'border-box'
     },
-    errorText: {
-      color: '#ff4444',
-      fontSize: '0.8rem',
-      marginTop: '0.3rem',
-      display: 'block',
+
+    row: {
+      display: 'grid',
+      gridTemplateColumns: isMobile ? '1fr' : '1fr 1fr',
+      gap: isMobile ? '16px' : '20px'
     },
-    btnSubmit: {
+
+    submitBtn: {
       width: '100%',
-      padding: '1rem',
-      background: '#ffffff',
-      color: '#0a0a0a',
+      padding: isMobile ? '16px' : '18px',
+      borderRadius: '14px',
       border: 'none',
-      borderRadius: '10px',
-      fontSize: '1rem',
+      background: 'linear-gradient(135deg, #25D366, #128C7E)',
+      color: '#fff',
       fontWeight: '700',
+      fontSize: isMobile ? '0.95rem' : '1rem',
       cursor: 'pointer',
       transition: 'all 0.3s ease',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      gap: '0.8rem',
+      gap: '10px',
+      marginTop: '8px',
+      boxShadow: '0 4px 20px rgba(37, 211, 102, 0.3)',
+      letterSpacing: '0.5px'
     },
-    btnSubmitDisabled: {
+
+    submitBtnHover: {
+      transform: 'translateY(-2px)',
+      boxShadow: '0 8px 30px rgba(37, 211, 102, 0.45)'
+    },
+
+    submitBtnDisabled: {
       opacity: 0.7,
       cursor: 'not-allowed',
+      transform: 'none'
     },
+
     successMessage: {
-      padding: '1rem',
-      background: 'rgba(76, 175, 80, 0.1)',
-      border: '1px solid rgba(76, 175, 80, 0.3)',
-      borderRadius: '10px',
-      color: '#4CAF50',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: isMobile ? '40px 20px' : '60px 40px',
       textAlign: 'center',
+      gap: '16px'
+    },
+
+    successIcon: {
+      width: '72px',
+      height: '72px',
+      borderRadius: '50%',
+      background: 'linear-gradient(135deg, rgba(37, 211, 102, 0.2), rgba(37, 211, 102, 0.1))',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      gap: '0.8rem',
+      color: '#25D366',
+      fontSize: '1.8rem',
+      border: '2px solid rgba(37, 211, 102, 0.3)'
     },
+
+    successTitle: {
+      fontSize: isMobile ? '1.2rem' : '1.4rem',
+      fontWeight: '700',
+      color: '#25D366'
+    },
+
+    successText: {
+      fontSize: '0.9rem',
+      color: 'rgba(255,255,255,0.5)',
+      maxWidth: '320px'
+    },
+
+    spinner: { animation: 'spin 1s linear infinite' }
   };
 
-  // Gestion des changements
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData(prev => ({ ...prev, [name]: value }));
-    // Effacer l'erreur quand l'utilisateur tape
-    if (errors[name]) {
-      setErrors(prev => ({ ...prev, [name]: '' }));
+  const socialLinks = [
+    { 
+      icon: <FaLinkedin />, 
+      label: 'LinkedIn', 
+      href: 'https://www.linkedin.com/in/siham-lakmichi/',
+      hoverColor: '#0A66C2',
+      hoverBg: 'rgba(10, 102, 194, 0.15)',
+      hoverBorder: 'rgba(10, 102, 194, 0.4)'
+    },
+    { 
+      icon: <FaInstagram />, 
+      label: 'Instagram', 
+      href: 'https://www.instagram.com/siham_lakmichi',
+      hoverColor: '#E1306C',
+      hoverBg: 'rgba(225, 48, 108, 0.15)',
+      hoverBorder: 'rgba(225, 48, 108, 0.4)'
     }
-  };
-
-  // Validation du formulaire
-  const validateForm = () => {
-    const newErrors = {};
-    if (!formData.name.trim()) newErrors.name = 'Le nom est requis';
-    if (!formData.email.trim()) {
-      newErrors.email = 'L\'email est requis';
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      newErrors.email = 'Email invalide';
-    }
-    if (!formData.subject.trim()) newErrors.subject = 'Le sujet est requis';
-    if (!formData.message.trim()) newErrors.message = 'Le message est requis';
-    setErrors(newErrors);
-    return Object.keys(newErrors).length === 0;
-  };
-
-  // Soumission du formulaire
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!validateForm()) return;
-
-    setIsSubmitting(true);
-    
-    // Simulation d'envoi
-    setTimeout(() => {
-      console.log('Formulaire soumis :', formData);
-      setIsSubmitting(false);
-      setIsSubmitted(true);
-      setFormData({ name: '', email: '', subject: '', message: '' });
-      setTimeout(() => setIsSubmitted(false), 5000);
-    }, 1500);
-  };
-
-  // Gestion des survols
-  const handleMouseEnter = (e, type) => {
-    if (type === 'submit') {
-      e.target.style.transform = 'translateY(-2px)';
-      e.target.style.boxShadow = '0 8px 25px rgba(255, 255, 255, 0.2)';
-    }
-  };
-
-  const handleMouseLeave = (e, type) => {
-    if (type === 'submit') {
-      e.target.style.transform = 'translateY(0)';
-      e.target.style.boxShadow = 'none';
-    }
-  };
+  ];
 
   return (
     <div style={styles.container}>
+      <div style={styles.backgroundDecoration} />
+      
       <div style={styles.wrapper}>
         {/* Header */}
         <div style={styles.header}>
-          <span style={styles.badge}>✦ Contact</span>
-          <h1 style={styles.title}>Entrons en contact</h1>
+          <div style={styles.badge}>
+            <FaComment size={12} />
+            Contact
+          </div>
+          <h1 style={styles.title}>Travaillons ensemble</h1>
           <p style={styles.subtitle}>
-            Vous avez un projet en tête ? Discutons-en ! Je suis toujours 
-            intéressé par de nouvelles opportunités.
+            Une question, un projet ou une collaboration ? N'hésitez pas à me contacter, 
+            je vous répondrai dans les plus brefs délais.
           </p>
         </div>
 
-        {/* Grid Contact */}
         <div style={styles.grid}>
-          {/* Colonne gauche - Informations */}
-          <div style={styles.infoSection}>
+          {/* Left Column - Info */}
+          <div style={styles.leftColumn}>
+            
             {/* Email */}
-            <div style={styles.infoCard}>
-              <div style={styles.infoItem}>
-                <div style={styles.infoIcon}>
-                  <FaEnvelope />
-                </div>
-                <div style={styles.infoContent}>
-                  <div style={styles.infoLabel}>Email</div>
-                  <a href="mailto:votre-email@example.com" style={styles.infoValueLink}>
-                    votre-email@example.com
-                  </a>
-                </div>
+            <a 
+              href="mailto:lakmichisiham@gmail.com"
+              style={{
+                ...styles.infoCard,
+                ...(hoveredCard === 'email' ? styles.infoCardHover : {})
+              }}
+              onMouseEnter={() => setHoveredCard('email')}
+              onMouseLeave={() => setHoveredCard(null)}
+            >
+              <div style={styles.iconWrapper}>
+                <FaEnvelope />
+              </div>
+              <div style={styles.infoContent}>
+                <div style={styles.infoLabel}>Email</div>
+                <div style={styles.infoValue}>lakmichisiham@gmail.com</div>
+              </div>
+            </a>
+
+            {/* Phone */}
+            <a 
+              href="tel:+212601263349"
+              style={{
+                ...styles.infoCard,
+                ...(hoveredCard === 'phone' ? styles.infoCardHover : {})
+              }}
+              onMouseEnter={() => setHoveredCard('phone')}
+              onMouseLeave={() => setHoveredCard(null)}
+            >
+              <div style={styles.iconWrapper}>
+                <FaPhone />
+              </div>
+              <div style={styles.infoContent}>
+                <div style={styles.infoLabel}>Téléphone</div>
+                <div style={styles.infoValue}>06 01 26 33 49</div>
+              </div>
+            </a>
+
+            {/* Location */}
+            <div 
+              style={{
+                ...styles.infoCard,
+                ...(hoveredCard === 'location' ? styles.infoCardHover : {})
+              }}
+              onMouseEnter={() => setHoveredCard('location')}
+              onMouseLeave={() => setHoveredCard(null)}
+            >
+              <div style={styles.iconWrapper}>
+                <FaMapMarkerAlt />
+              </div>
+              <div style={styles.infoContent}>
+                <div style={styles.infoLabel}>Localisation</div>
+                <div style={styles.infoValue}>Maroc</div>
               </div>
             </div>
 
-            {/* Téléphone */}
-            <div style={styles.infoCard}>
-              <div style={styles.infoItem}>
-                <div style={styles.infoIcon}>
-                  <FaPhone />
-                </div>
-                <div style={styles.infoContent}>
-                  <div style={styles.infoLabel}>Téléphone</div>
-                  <a href="tel:+1234567890" style={styles.infoValueLink}>
-                    +1 234 567 890
-                  </a>
-                </div>
+            {/* Availability */}
+            <div 
+              style={{
+                ...styles.infoCard,
+                ...(hoveredCard === 'availability' ? styles.infoCardHover : {})
+              }}
+              onMouseEnter={() => setHoveredCard('availability')}
+              onMouseLeave={() => setHoveredCard(null)}
+            >
+              <div style={styles.iconWrapper}>
+                <FaClock />
+              </div>
+              <div style={styles.infoContent}>
+                <div style={styles.infoLabel}>Disponibilité</div>
+                <div style={styles.infoValue}>Lun - Ven, 9h - 18h</div>
               </div>
             </div>
 
-            {/* Localisation */}
-            <div style={styles.infoCard}>
-              <div style={styles.infoItem}>
-                <div style={styles.infoIcon}>
-                  <FaMapMarker />
-                </div>
-                <div style={styles.infoContent}>
-                  <div style={styles.infoLabel}>Localisation</div>
-                  <div style={styles.infoValue}>Paris, France</div>
-                </div>
-              </div>
-            </div>
-
-            {/* Réseaux sociaux */}
+            {/* Social - LinkedIn & Instagram uniquement */}
             <div style={styles.socialSection}>
-              <div style={styles.socialTitle}>Suivez-moi</div>
+              <div style={styles.socialTitle}>Réseaux sociaux</div>
               <div style={styles.socialGrid}>
-                <a 
-                  href="https://github.com/votre-username" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  style={styles.socialLink}
-                  onMouseEnter={(e) => { e.target.style.background = 'rgba(255,255,255,0.1)'; e.target.style.color = '#ffffff'; }}
-                  onMouseLeave={(e) => { e.target.style.background = 'rgba(255,255,255,0.03)'; e.target.style.color = '#888888'; }}
-                >
-                  <FaGithub /> GitHub
-                </a>
-                <a 
-                  href="https://linkedin.com/in/votre-username" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  style={styles.socialLink}
-                  onMouseEnter={(e) => { e.target.style.background = 'rgba(255,255,255,0.1)'; e.target.style.color = '#ffffff'; }}
-                  onMouseLeave={(e) => { e.target.style.background = 'rgba(255,255,255,0.03)'; e.target.style.color = '#888888'; }}
-                >
-                  <FaLinkedin /> LinkedIn
-                </a>
-                <a 
-                  href="https://twitter.com/votre-username" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  style={styles.socialLink}
-                  onMouseEnter={(e) => { e.target.style.background = 'rgba(255,255,255,0.1)'; e.target.style.color = '#ffffff'; }}
-                  onMouseLeave={(e) => { e.target.style.background = 'rgba(255,255,255,0.03)'; e.target.style.color = '#888888'; }}
-                >
-                  <FaTwitter /> Twitter
-                </a>
-                <a 
-                  href="https://wa.me/1234567890" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  style={styles.socialLink}
-                  onMouseEnter={(e) => { e.target.style.background = 'rgba(255,255,255,0.1)'; e.target.style.color = '#ffffff'; }}
-                  onMouseLeave={(e) => { e.target.style.background = 'rgba(255,255,255,0.03)'; e.target.style.color = '#888888'; }}
-                >
-                  <FaWhatsapp /> WhatsApp
-                </a>
-                <a 
-                  href="https://t.me/votre-username" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  style={styles.socialLink}
-                  onMouseEnter={(e) => { e.target.style.background = 'rgba(255,255,255,0.1)'; e.target.style.color = '#ffffff'; }}
-                  onMouseLeave={(e) => { e.target.style.background = 'rgba(255,255,255,0.03)'; e.target.style.color = '#888888'; }}
-                >
-                  <FaTelegram /> Telegram
-                </a>
+                {socialLinks.map((social, index) => (
+                  <a
+                    key={index}
+                    href={social.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      ...styles.socialButton,
+                      ...(hoveredCard === `social-${index}` ? {
+                        ...styles.socialButtonHover,
+                        color: social.hoverColor,
+                        background: social.hoverBg,
+                        borderColor: social.hoverBorder
+                      } : {})
+                    }}
+                    onMouseEnter={() => setHoveredCard(`social-${index}`)}
+                    onMouseLeave={() => setHoveredCard(null)}
+                    title={social.label}
+                  >
+                    {social.icon}
+                    {social.label}
+                  </a>
+                ))}
               </div>
             </div>
+
+            {/* WhatsApp */}
+            <a
+              href="https://wa.me/212601263349"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                ...styles.whatsappBtn,
+                ...(hoveredCard === 'whatsapp' ? styles.whatsappBtnHover : {})
+              }}
+              onMouseEnter={() => setHoveredCard('whatsapp')}
+              onMouseLeave={() => setHoveredCard(null)}
+            >
+              <FaWhatsapp size={20} />
+              Discutons sur WhatsApp
+            </a>
           </div>
 
-          {/* Colonne droite - Formulaire */}
-          <div style={styles.formSection}>
-            <h3 style={styles.formTitle}>Envoyez-moi un message</h3>
-            <p style={styles.formSubtitle}>
-              Remplissez le formulaire ci-dessous et je vous répondrai dans les plus brefs délais.
-            </p>
-
+          {/* Right Column - Form */}
+          <div style={styles.formCard}>
             {isSubmitted ? (
               <div style={styles.successMessage}>
-                <FaCheck size={20} />
-                <span>Message envoyé avec succès ! Je vous répondrai rapidement.</span>
+                <div style={styles.successIcon}>
+                  <FaWhatsapp />
+                </div>
+                <div style={styles.successTitle}>WhatsApp ouvert !</div>
+                <div style={styles.successText}>
+                  Votre message a été préparé dans WhatsApp. 
+                  Appuyez sur <strong>Envoyer</strong> pour me l'expédier. 💬
+                </div>
+                <button
+                  onClick={() => setIsSubmitted(false)}
+                  style={{
+                    marginTop: '16px',
+                    padding: '12px 24px',
+                    borderRadius: '10px',
+                    border: '1px solid rgba(255,255,255,0.15)',
+                    background: 'transparent',
+                    color: '#fff',
+                    cursor: 'pointer',
+                    fontSize: '0.9rem',
+                    transition: 'all 0.3s ease'
+                  }}
+                >
+                  Envoyer un autre message
+                </button>
               </div>
             ) : (
-              <form onSubmit={handleSubmit}>
-                <div style={styles.formGroup}>
-                  <label style={styles.label}>Nom complet *</label>
-                  <input
-                    type="text"
-                    name="name"
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="Jean Dupont"
-                    style={{
-                      ...styles.input,
-                      ...(errors.name ? styles.inputError : {})
-                    }}
-                  />
-                  {errors.name && <span style={styles.errorText}>{errors.name}</span>}
-                </div>
+              <>
+                <h2 style={styles.formTitle}>Envoyez-moi un message</h2>
+                <p style={styles.formSubtitle}>
+                  Remplissez le formulaire — il s'ouvrira dans WhatsApp pour un envoi instantané.
+                </p>
 
-                <div style={styles.formGroup}>
-                  <label style={styles.label}>Email *</label>
-                  <input
-                    type="email"
-                    name="email"
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="jean@example.com"
-                    style={{
-                      ...styles.input,
-                      ...(errors.email ? styles.inputError : {})
-                    }}
-                  />
-                  {errors.email && <span style={styles.errorText}>{errors.email}</span>}
-                </div>
+                <form onSubmit={handleSubmit}>
+                  <div style={styles.row}>
+                    <div style={styles.inputGroup}>
+                      <label style={styles.inputLabel}>
+                        <FaUser size={12} />
+                        Nom complet
+                      </label>
+                      <input
+                        type="text"
+                        name="name"
+                        value={formData.name}
+                        onChange={handleInputChange}
+                        placeholder="Votre nom"
+                        required
+                        style={{
+                          ...styles.input,
+                          ...(focusedField === 'name' ? styles.inputFocus : {})
+                        }}
+                        onFocus={() => setFocusedField('name')}
+                        onBlur={() => setFocusedField(null)}
+                      />
+                    </div>
 
-                <div style={styles.formGroup}>
-                  <label style={styles.label}>Sujet *</label>
-                  <input
-                    type="text"
-                    name="subject"
-                    value={formData.subject}
-                    onChange={handleChange}
-                    placeholder="Demande de projet"
-                    style={{
-                      ...styles.input,
-                      ...(errors.subject ? styles.inputError : {})
-                    }}
-                  />
-                  {errors.subject && <span style={styles.errorText}>{errors.subject}</span>}
-                </div>
+                    <div style={styles.inputGroup}>
+                      <label style={styles.inputLabel}>
+                        <FaEnvelope size={12} />
+                        Email
+                      </label>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        placeholder="votre@email.com"
+                        required
+                        style={{
+                          ...styles.input,
+                          ...(focusedField === 'email' ? styles.inputFocus : {})
+                        }}
+                        onFocus={() => setFocusedField('email')}
+                        onBlur={() => setFocusedField(null)}
+                      />
+                    </div>
+                  </div>
 
-                <div style={styles.formGroup}>
-                  <label style={styles.label}>Message *</label>
-                  <textarea
-                    name="message"
-                    value={formData.message}
-                    onChange={handleChange}
-                    placeholder="Décrivez votre projet..."
-                    style={{
-                      ...styles.textarea,
-                      ...(errors.message ? styles.inputError : {})
-                    }}
-                  />
-                  {errors.message && <span style={styles.errorText}>{errors.message}</span>}
-                </div>
+                  <div style={styles.inputGroup}>
+                    <label style={styles.inputLabel}>
+                      <FaTag size={12} />
+                      Sujet
+                    </label>
+                    <input
+                      type="text"
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleInputChange}
+                      placeholder="Le sujet de votre message"
+                      required
+                      style={{
+                        ...styles.input,
+                        ...(focusedField === 'subject' ? styles.inputFocus : {})
+                      }}
+                      onFocus={() => setFocusedField('subject')}
+                      onBlur={() => setFocusedField(null)}
+                    />
+                  </div>
 
-                <button
-                  type="submit"
-                  style={{
-                    ...styles.btnSubmit,
-                    ...(isSubmitting ? styles.btnSubmitDisabled : {})
-                  }}
-                  onMouseEnter={(e) => handleMouseEnter(e, 'submit')}
-                  onMouseLeave={(e) => handleMouseLeave(e, 'submit')}
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? (
-                    <>
-                      <FaSpinner style={{ animation: 'spin 1s linear infinite' }} />
-                      Envoi en cours...
-                    </>
-                  ) : (
-                    <>
-                      <FaPaperPlane />
-                      Envoyer le message
-                    </>
-                  )}
-                </button>
-              </form>
+                  <div style={styles.inputGroup}>
+                    <label style={styles.inputLabel}>
+                      <FaComment size={12} />
+                      Message
+                    </label>
+                    <textarea
+                      name="message"
+                      value={formData.message}
+                      onChange={handleInputChange}
+                      placeholder="Décrivez votre projet ou votre demande..."
+                      required
+                      style={{
+                        ...styles.textarea,
+                        ...(focusedField === 'message' ? styles.inputFocus : {})
+                      }}
+                      onFocus={() => setFocusedField('message')}
+                      onBlur={() => setFocusedField(null)}
+                    />
+                  </div>
+
+                  <button
+                    type="submit"
+                    disabled={isSubmitting}
+                    style={{
+                      ...styles.submitBtn,
+                      ...(isSubmitting ? styles.submitBtnDisabled : {}),
+                      ...(hoveredCard === 'submit' && !isSubmitting ? styles.submitBtnHover : {})
+                    }}
+                    onMouseEnter={() => setHoveredCard('submit')}
+                    onMouseLeave={() => setHoveredCard(null)}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <FaSpinner style={styles.spinner} />
+                        Ouverture de WhatsApp...
+                      </>
+                    ) : (
+                      <>
+                        <FaWhatsapp size={20} />
+                        Envoyer via WhatsApp
+                      </>
+                    )}
+                  </button>
+                </form>
+              </>
             )}
           </div>
         </div>
       </div>
 
-      {/* Style pour l'animation de rotation */}
       <style>
         {`
+          @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+          }
+
           @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+          }
+
+          * { box-sizing: border-box; }
+
+          input::placeholder,
+          textarea::placeholder {
+            color: rgba(255,255,255,0.25);
+          }
+
+          input:-webkit-autofill,
+          input:-webkit-autofill:hover,
+          input:-webkit-autofill:focus,
+          textarea:-webkit-autofill {
+            -webkit-text-fill-color: #fff;
+            -webkit-box-shadow: 0 0 0px 1000px #1a1f3a inset;
+            transition: background-color 5000s ease-in-out 0s;
+          }
+
+          ::selection {
+            background: rgba(0, 198, 255, 0.3);
+            color: #fff;
           }
         `}
       </style>

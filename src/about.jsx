@@ -1,271 +1,192 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { 
-  FaGraduationCap, FaBriefcase, FaCode, 
-  FaArrowRight, FaSchool, FaLaptopCode,
-  FaCalendar, FaUserGraduate
-} from 'react-icons/fa';
+import { FaArrowRight, FaGraduationCap, FaBriefcase, FaCode } from 'react-icons/fa';
 
 const About = () => {
   const styles = {
     container: {
       minHeight: '100vh',
-      padding: '120px 20px 80px',
-      background: '#0a0a0a',
-      fontFamily: "'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
-      color: '#ffffff',
+      padding: 'clamp(80px, 10vh, 120px) clamp(15px, 4vw, 20px) clamp(60px, 8vh, 80px)',
+      background: '#f5f7fa',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      fontFamily: "'Inter', 'Segoe UI', sans-serif",
     },
-    wrapper: {
-      maxWidth: '900px',
+    card: {
+      maxWidth: 'min(700px, 95%)',
+      width: '100%',
+      background: '#ffffff',
+      borderRadius: 'clamp(16px, 2vw, 20px)',
+      padding: 'clamp(1.5rem, 4vw, 3rem)',
+      boxShadow: '0 2px 20px rgba(0,0,0,0.06)',
+      border: '1px solid #e8e8ec',
       margin: '0 auto',
     },
     header: {
       textAlign: 'center',
-      marginBottom: '3rem',
-    },
-    badge: {
-      display: 'inline-block',
-      padding: '0.4rem 1.2rem',
-      background: 'rgba(255, 255, 255, 0.05)',
-      border: '1px solid rgba(255, 255, 255, 0.1)',
-      borderRadius: '50px',
-      fontSize: '0.75rem',
-      fontWeight: '600',
-      textTransform: 'uppercase',
-      letterSpacing: '2px',
-      color: '#ffffff',
-      marginBottom: '1rem',
-    },
-    title: {
-      fontSize: '2.5rem',
-      fontWeight: '800',
-      marginBottom: '0.5rem',
-    },
-    subtitle: {
-      fontSize: '1.1rem',
-      color: '#888888',
-      maxWidth: '500px',
-      margin: '0 auto',
-      lineHeight: '1.6',
-    },
-    card: {
-      background: '#1a1a1a',
-      borderRadius: '20px',
-      padding: '2.5rem',
-      border: '1px solid rgba(255, 255, 255, 0.05)',
-      marginBottom: '2rem',
-    },
-    intro: {
-      display: 'flex',
-      alignItems: 'center',
-      gap: '2rem',
-      marginBottom: '2rem',
+      marginBottom: 'clamp(1.5rem, 3vw, 2rem)',
     },
     avatar: {
-      width: '80px',
-      height: '80px',
-      borderRadius: '50%',
-      background: 'linear-gradient(135deg, #ffffff, #666666)',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      fontSize: '2.5rem',
-      flexShrink: 0,
+      fontSize: 'clamp(3rem, 6vw, 4rem)',
+      marginBottom: 'clamp(0.3rem, 1vw, 0.5rem)',
+      display: 'block',
     },
-    introText: {
-      flex: 1,
-    },
-    introTitle: {
-      fontSize: '1.5rem',
+    title: {
+      fontSize: 'clamp(1.5rem, 4vw, 2rem)',
       fontWeight: '700',
-      marginBottom: '0.3rem',
+      color: '#1a1a2e',
+      marginBottom: 'clamp(0.2rem, 0.5vw, 0.3rem)',
+      lineHeight: '1.2',
     },
-    introRole: {
-      color: '#888888',
-      fontSize: '1rem',
+    role: {
+      color: '#6a6a8a',
+      fontSize: 'clamp(0.85rem, 1.2vw, 1rem)',
     },
-    description: {
-      color: '#aaaaaa',
+    text: {
+      color: '#444466',
       lineHeight: '1.8',
-      fontSize: '1rem',
-      marginBottom: '1rem',
+      marginBottom: 'clamp(0.8rem, 1.5vw, 1rem)',
+      fontSize: 'clamp(0.9rem, 1.1vw, 0.95rem)',
     },
     highlight: {
-      color: '#ffffff',
+      color: '#1a1a2e',
       fontWeight: '600',
     },
-    grid: {
+    stats: {
       display: 'grid',
-      gridTemplateColumns: '1fr 1fr',
-      gap: '1.5rem',
-      marginTop: '2rem',
+      gridTemplateColumns: 'repeat(3, 1fr)',
+      gap: 'clamp(0.6rem, 1.5vw, 1rem)',
+      margin: 'clamp(1.2rem, 2.5vw, 1.5rem) 0',
     },
-    infoCard: {
-      background: 'rgba(255, 255, 255, 0.03)',
-      padding: '1.5rem',
-      borderRadius: '12px',
-      border: '1px solid rgba(255, 255, 255, 0.05)',
-    },
-    infoIcon: {
-      fontSize: '1.5rem',
-      color: '#ffffff',
-      marginBottom: '0.5rem',
-    },
-    infoTitle: {
-      fontSize: '0.8rem',
-      fontWeight: '600',
-      textTransform: 'uppercase',
-      letterSpacing: '1px',
-      color: '#666666',
-      marginBottom: '0.3rem',
-    },
-    infoValue: {
-      fontSize: '1rem',
-      color: '#ffffff',
-    },
-    infoValueSmall: {
-      fontSize: '0.9rem',
-      color: '#aaaaaa',
-    },
-    cta: {
+    stat: {
       textAlign: 'center',
-      marginTop: '2rem',
-      paddingTop: '2rem',
-      borderTop: '1px solid rgba(255, 255, 255, 0.05)',
+      padding: 'clamp(0.8rem, 1.5vw, 1rem) clamp(0.5rem, 1vw, 1rem)',
+      background: '#f5f7fa',
+      borderRadius: '10px',
+      border: '1px solid #e8e8ec',
+      transition: 'transform 0.3s ease',
     },
-    ctaButton: {
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '0.8rem',
-      padding: '0.8rem 2.5rem',
-      background: '#ffffff',
-      color: '#0a0a0a',
+    statIcon: {
+      fontSize: 'clamp(1.2rem, 2vw, 1.5rem)',
+      marginBottom: '0.3rem',
+      color: '#1a1a2e',
+    },
+    statNumber: {
+      display: 'block',
+      fontSize: 'clamp(1.1rem, 1.8vw, 1.3rem)',
+      fontWeight: '700',
+      color: '#1a1a2e',
+    },
+    statLabel: {
+      fontSize: 'clamp(0.7rem, 0.9vw, 0.8rem)',
+      color: '#8888aa',
+    },
+    buttons: {
+      display: 'flex',
+      gap: 'clamp(0.8rem, 1.5vw, 1rem)',
+      justifyContent: 'center',
+      marginTop: 'clamp(1.2rem, 2.5vw, 1.5rem)',
+      flexWrap: 'wrap',
+    },
+    btnPrimary: {
+      padding: 'clamp(0.7rem, 1.2vw, 0.8rem) clamp(1.5rem, 3vw, 2rem)',
+      background: '#1a1a2e',
+      color: '#ffffff',
       borderRadius: '50px',
       textDecoration: 'none',
       fontWeight: '600',
       transition: 'all 0.3s ease',
-    },
-    buttonGroup: {
-      display: 'flex',
-      gap: '1rem',
-      justifyContent: 'center',
-      flexWrap: 'wrap',
-      marginTop: '1.5rem',
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '0.5rem',
+      fontSize: 'clamp(0.85rem, 1vw, 1rem)',
+      whiteSpace: 'nowrap',
     },
     btnSecondary: {
-      display: 'inline-flex',
-      alignItems: 'center',
-      gap: '0.8rem',
-      padding: '0.8rem 2rem',
+      padding: 'clamp(0.7rem, 1.2vw, 0.8rem) clamp(1.5rem, 3vw, 2rem)',
       background: 'transparent',
-      color: '#ffffff',
-      border: '1px solid rgba(255, 255, 255, 0.2)',
+      color: '#1a1a2e',
+      border: '1px solid #d0d0d8',
       borderRadius: '50px',
       textDecoration: 'none',
       fontWeight: '600',
       transition: 'all 0.3s ease',
+      display: 'inline-flex',
+      alignItems: 'center',
+      gap: '0.5rem',
+      fontSize: 'clamp(0.85rem, 1vw, 1rem)',
+      whiteSpace: 'nowrap',
     },
   };
 
   return (
     <div style={styles.container}>
-      <div style={styles.wrapper}>
-        {/* Header */}
+      <div style={styles.card}>
         <div style={styles.header}>
-          <span style={styles.badge}>✦ À propos</span>
-          <h1 style={styles.title}>Qui suis-je ?</h1>
-          <p style={styles.subtitle}>
-            Technicien spécialisé passionné par le développement web
-          </p>
+          <span style={styles.avatar}>👩‍💻</span>
+          <h1 style={styles.title}>Lakmichi Siham</h1>
+          <p style={styles.role}>Technicienne Spécialisée - OFPPT</p>
         </div>
 
-        {/* Main Card */}
-        <div style={styles.card}>
-          {/* Introduction */}
-          <div style={styles.intro}>
-            <div style={styles.avatar}>👨‍💻</div>
-            <div style={styles.introText}>
-              <h2 style={styles.introTitle}>Lakmichi Siham</h2>
-              <p style={styles.introRole}>Technicien Spécialisé en Développement Web</p>
-            </div>
+        <p style={styles.text}>
+          Je suis une <span style={styles.highlight}>Technicienne Spécialisée en Développement Web</span>, 
+          diplômée de l'OFPPT. Passionnée par la création d'applications web modernes, 
+          j'ai acquis des compétences en React, JavaScript, Node.js et les technologies web.
+        </p>
+        <p style={styles.text}>
+          À travers mes <span style={styles.highlight}>stages en entreprise</span> et mes 
+          projets personnels, j'ai développé une solide expérience pratique et 
+          je suis prête à relever de nouveaux défis.
+        </p>
+
+        <div style={styles.stats}>
+          <div style={styles.stat}>
+            <div style={styles.statIcon}><FaGraduationCap /></div>
+            <span style={styles.statNumber}>OFPPT</span>
+            <span style={styles.statLabel}>Formation</span>
           </div>
-
-          {/* Description */}
-          <p style={styles.description}>
-            Je suis un <span style={styles.highlight}>Technicien Spécialisé</span> diplômé de l'OFPPT, 
-            passionné par le développement web. J'ai acquis une solide formation en 
-            programmation et en conception d'applications web.
-          </p>
-          <p style={styles.description}>
-            À travers mes <span style={styles.highlight}>stages et projets</span>, j'ai développé 
-            des compétences pratiques en React, JavaScript, Node.js et les technologies 
-            du web moderne. Je suis constamment à la recherche de nouvelles opportunités 
-            pour apprendre et créer.
-          </p>
-
-          {/* Informations */}
-          <div style={styles.grid}>
-            <div style={styles.infoCard}>
-              <div style={styles.infoIcon}>
-                <FaUserGraduate />
-              </div>
-              <div style={styles.infoTitle}>Formation</div>
-              <div style={styles.infoValue}>Technicien Spécialisé</div>
-              <div style={styles.infoValueSmall}>OFPPT - Développement Web</div>
-            </div>
-
-            <div style={styles.infoCard}>
-              <div style={styles.infoIcon}>
-                <FaSchool />
-              </div>
-              <div style={styles.infoTitle}>Établissement</div>
-              <div style={styles.infoValue}>OFPPT</div>
-              <div style={styles.infoValueSmall}>Maroc</div>
-            </div>
-
-            <div style={styles.infoCard}>
-              <div style={styles.infoIcon}>
-                <FaBriefcase />
-              </div>
-              <div style={styles.infoTitle}>Stages</div>
-              <div style={styles.infoValue}>2 Stages</div>
-              <div style={styles.infoValueSmall}>En entreprise</div>
-            </div>
-
-            <div style={styles.infoCard}>
-              <div style={styles.infoIcon}>
-                <FaCode />
-              </div>
-              <div style={styles.infoTitle}>Projets</div>
-              <div style={styles.infoValue}>+5 Projets</div>
-              <div style={styles.infoValueSmall}>Personnels & Académiques</div>
-            </div>
+          <div style={styles.stat}>
+            <div style={styles.statIcon}><FaBriefcase /></div>
+            <span style={styles.statNumber}>4</span>
+            <span style={styles.statLabel}>Stages</span>
           </div>
-
-          {/* Call to Action */}
-          <div style={styles.cta}>
-            <p style={{ color: '#888888', marginBottom: '1rem' }}>
-              Découvrez mon parcours à travers mes stages et projets
-            </p>
-            <div style={styles.buttonGroup}>
-              <Link 
-                to="/stages" 
-                style={styles.btnSecondary}
-                onMouseEnter={(e) => { e.target.style.borderColor = '#ffffff'; e.target.style.background = 'rgba(255,255,255,0.05)'; }}
-                onMouseLeave={(e) => { e.target.style.borderColor = 'rgba(255,255,255,0.2)'; e.target.style.background = 'transparent'; }}
-              >
-                Voir mes stages
-              </Link>
-              <Link 
-                to="/projects" 
-                style={styles.ctaButton}
-                onMouseEnter={(e) => { e.target.style.transform = 'translateY(-3px)'; e.target.style.boxShadow = '0 10px 30px rgba(255,255,255,0.2)'; }}
-                onMouseLeave={(e) => { e.target.style.transform = 'translateY(0)'; e.target.style.boxShadow = 'none'; }}
-              >
-                Voir mes projets <FaArrowRight />
-              </Link>
-            </div>
+          <div style={styles.stat}>
+            <div style={styles.statIcon}><FaCode /></div>
+            <span style={styles.statNumber}>5+</span>
+            <span style={styles.statLabel}>Projets</span>
           </div>
+        </div>
+
+        <div style={styles.buttons}>
+          <Link 
+            to="/stages" 
+            style={styles.btnSecondary}
+            onMouseEnter={(e) => { 
+              e.target.style.borderColor = '#1a1a2e'; 
+              e.target.style.background = '#f0f0f5'; 
+            }}
+            onMouseLeave={(e) => { 
+              e.target.style.borderColor = '#d0d0d8'; 
+              e.target.style.background = 'transparent'; 
+            }}
+          >
+            Stages
+          </Link>
+          <Link 
+            to="/projects" 
+            style={styles.btnPrimary}
+            onMouseEnter={(e) => { 
+              e.target.style.transform = 'translateY(-3px)'; 
+              e.target.style.boxShadow = '0 8px 25px rgba(26,26,46,0.2)'; 
+            }}
+            onMouseLeave={(e) => { 
+              e.target.style.transform = 'translateY(0)'; 
+              e.target.style.boxShadow = 'none'; 
+            }}
+          >
+            Projets <FaArrowRight />
+          </Link>
         </div>
       </div>
     </div>

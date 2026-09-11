@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Link, NavLink } from 'react-router-dom';
 import { FaBars, FaTimes } from 'react-icons/fa';
 
-/* ---------- Hook : détecte le breakpoint mobile ---------- */
 const useMediaQuery = (query) => {
   const [matches, setMatches] = useState(() =>
     typeof window !== 'undefined' ? window.matchMedia(query).matches : false
@@ -11,8 +10,10 @@ const useMediaQuery = (query) => {
   useEffect(() => {
     const mql = window.matchMedia(query);
     const handler = (e) => setMatches(e.matches);
+
     setMatches(mql.matches);
     mql.addEventListener('change', handler);
+
     return () => mql.removeEventListener('change', handler);
   }, [query]);
 
@@ -66,6 +67,7 @@ const Header = () => {
       transition: 'all 0.4s ease',
       padding: scrolled ? '0.6rem 0' : '1rem 0',
     },
+
     container: {
       maxWidth: '1200px',
       margin: '0 auto',
@@ -75,7 +77,6 @@ const Header = () => {
       alignItems: 'center',
     },
 
-    /* ✅ LOGO IMAGE (public folder) */
     logo: {
       display: 'flex',
       alignItems: 'center',
@@ -85,54 +86,75 @@ const Header = () => {
       fontWeight: 700,
       fontSize: isMobile ? '1.2rem' : '1.5rem',
     },
+
     logoImg: {
       width: isMobile ? 32 : 40,
       height: isMobile ? 32 : 40,
       objectFit: 'contain',
       borderRadius: 6,
     },
+
     logoDot: { color: '#888' },
 
     nav: {
       display: isMobile ? 'none' : 'flex',
       gap: '2rem',
     },
+
     link: {
       color: '#aaa',
       textDecoration: 'none',
     },
+
     hamburger: {
       display: isMobile ? 'block' : 'none',
       background: 'none',
       border: 'none',
       color: '#fff',
-      fontSize: '1.5rem',
+      fontSize: '1.6rem',
+      cursor: 'pointer',
     },
+
+    overlay: {
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      background: 'rgba(0,0,0,0.5)',
+      zIndex: 998,
+    },
+
     mobileMenu: {
       position: 'fixed',
       top: 0,
       right: 0,
-      width: '70%',
+      width: '75%',
       height: '100vh',
       background: '#111',
-      padding: '80px 20px',
+      padding: '90px 20px',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '15px',
+      zIndex: 999,
       transform: isMenuOpen ? 'translateX(0)' : 'translateX(100%)',
-      transition: '0.3s',
+      transition: '0.3s ease',
     },
+
     mobileLink: {
-      display: 'block',
       color: '#fff',
-      padding: '10px 0',
       textDecoration: 'none',
+      fontSize: '1.1rem',
     },
   };
 
   return (
     <>
+      {/* HEADER */}
       <header style={styles.header}>
         <div style={styles.container}>
 
-          {/* ✅ LOGO (PUBLIC FOLDER) */}
+          {/* LOGO */}
           <Link to="/" style={styles.logo}>
             <img src="/logo.png" alt="logo" style={styles.logoImg} />
             <span>
@@ -140,7 +162,7 @@ const Header = () => {
             </span>
           </Link>
 
-          {/* Desktop nav */}
+          {/* DESKTOP NAV */}
           {!isMobile && (
             <nav style={styles.nav}>
               {navLinks.map((l) => (
@@ -151,7 +173,7 @@ const Header = () => {
             </nav>
           )}
 
-          {/* Mobile button */}
+          {/* HAMBURGER */}
           {isMobile && (
             <button style={styles.hamburger} onClick={toggleMenu}>
               {isMenuOpen ? <FaTimes /> : <FaBars />}
@@ -160,7 +182,12 @@ const Header = () => {
         </div>
       </header>
 
-      {/* Mobile menu */}
+      {/* OVERLAY */}
+      {isMobile && isMenuOpen && (
+        <div style={styles.overlay} onClick={() => setIsMenuOpen(false)} />
+      )}
+
+      {/* MOBILE MENU */}
       {isMobile && (
         <div style={styles.mobileMenu}>
           {navLinks.map((l) => (

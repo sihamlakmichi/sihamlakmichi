@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
-import { 
-  FaLinkedin, FaEnvelope, FaCode, 
+import { Link, NavLink, useLocation } from 'react-router-dom';
+import {
+  FaLinkedin, FaEnvelope, FaCode,
   FaInstagram, FaWhatsapp, FaArrowUp,
-  FaPhone, FaMapMarker, FaGithub,
-  FaTwitter, FaYoutube, FaPaperPlane
+  FaPhone, FaMapMarker, FaGithub
 } from 'react-icons/fa';
 
 const Footer = () => {
   const [isMobile, setIsMobile] = useState(window.innerWidth <= 768);
   const [isSmallMobile, setIsSmallMobile] = useState(window.innerWidth <= 480);
   const [isTablet, setIsTablet] = useState(window.innerWidth <= 1024);
+  const location = useLocation();
 
   useEffect(() => {
     const handleResize = () => {
@@ -34,7 +34,6 @@ const Footer = () => {
       position: 'relative',
       overflow: 'hidden',
     },
-    // Effet de fond décoratif
     footerBg: {
       position: 'absolute',
       top: '-50%',
@@ -51,7 +50,7 @@ const Footer = () => {
       left: '-5%',
       width: isMobile ? '250px' : '400px',
       height: isMobile ? '250px' : '400px',
-      background: 'radial-gradient(circle, rgba(255,255,255,0.015) 0%, transparent 70%)',
+      background: 'radial-gradient(circle, rgba(59,130,246,0.04) 0%, transparent 70%)',
       borderRadius: '50%',
       pointerEvents: 'none',
     },
@@ -69,7 +68,6 @@ const Footer = () => {
       paddingBottom: isSmallMobile ? '1.5rem' : isMobile ? '2rem' : '2.5rem',
       borderBottom: '1px solid rgba(255,255,255,0.06)',
     },
-    // Brand
     brand: {
       display: 'flex',
       flexDirection: 'column',
@@ -83,28 +81,43 @@ const Footer = () => {
       textDecoration: 'none',
       justifyContent: isSmallMobile ? 'center' : 'flex-start',
     },
-    logoIcon: {
+
+    /* 🎯 Logo dans un cercle (même design que Header / About) */
+    logoImgWrapper: {
+      width: isSmallMobile ? '38px' : isMobile ? '42px' : '46px',
+      height: isSmallMobile ? '38px' : isMobile ? '42px' : '46px',
+      borderRadius: '50%',
+      background: 'rgba(255,255,255,0.08)',
+      padding: '4px',
+      border: '2px solid rgba(255,255,255,0.15)',
+      boxShadow: '0 4px 15px rgba(0,0,0,0.25)',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      width: isSmallMobile ? '35px' : isMobile ? '38px' : '42px',
-      height: isSmallMobile ? '35px' : isMobile ? '38px' : '42px',
-      borderRadius: '10px',
-      background: 'linear-gradient(135deg, #333333 0%, #000000 100%)',
-      color: '#ffffff',
-      fontSize: isSmallMobile ? '0.9rem' : isMobile ? '1rem' : '1.1rem',
-      boxShadow: '0 4px 15px rgba(0,0,0,0.5)',
-      border: '1px solid rgba(255,255,255,0.05)',
+      overflow: 'hidden',
+      flexShrink: 0,
+      transition: 'all 0.3s ease',
     },
+
+    logoImg: {
+      width: '100%',
+      height: '100%',
+      objectFit: 'contain',
+      borderRadius: '50%',
+      display: 'block',
+    },
+
     logoText: {
       color: '#ffffff',
       fontSize: isSmallMobile ? '1.2rem' : isMobile ? '1.3rem' : '1.4rem',
       fontWeight: '700',
       letterSpacing: '-0.5px',
     },
+
     logoAccent: {
-      color: '#666666',
+      color: '#3b82f6',
     },
+
     description: {
       color: 'rgba(255,255,255,0.4)',
       fontSize: isSmallMobile ? '0.8rem' : isMobile ? '0.85rem' : '0.9rem',
@@ -112,6 +125,7 @@ const Footer = () => {
       maxWidth: isSmallMobile ? '100%' : '350px',
       textAlign: isSmallMobile ? 'center' : 'left',
     },
+
     socialCompact: {
       display: 'flex',
       gap: isSmallMobile ? '0.6rem' : '0.8rem',
@@ -119,26 +133,29 @@ const Footer = () => {
       justifyContent: isSmallMobile ? 'center' : 'flex-start',
       flexWrap: 'wrap',
     },
+
     socialCompactLink: {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      width: isSmallMobile ? '34px' : isMobile ? '36px' : '38px',
-      height: isSmallMobile ? '34px' : isMobile ? '36px' : '38px',
+      width: isSmallMobile ? '36px' : isMobile ? '38px' : '40px',
+      height: isSmallMobile ? '36px' : isMobile ? '38px' : '40px',
       borderRadius: '50%',
       background: 'rgba(255,255,255,0.03)',
-      color: 'rgba(255,255,255,0.4)',
+      color: 'rgba(255,255,255,0.5)',
       transition: 'all 0.3s ease',
       border: '1px solid rgba(255,255,255,0.05)',
-      fontSize: isSmallMobile ? '0.8rem' : '0.9rem',
+      fontSize: isSmallMobile ? '0.85rem' : '0.95rem',
+      textDecoration: 'none',
     },
-    // Navigation
+
     navWrapper: {
       display: 'flex',
       flexDirection: 'column',
       gap: isSmallMobile ? '0.3rem' : '0.5rem',
       textAlign: isSmallMobile ? 'center' : 'left',
     },
+
     sectionTitle: {
       color: '#ffffff',
       fontSize: isSmallMobile ? '0.65rem' : isMobile ? '0.7rem' : '0.75rem',
@@ -148,28 +165,41 @@ const Footer = () => {
       marginBottom: '0.2rem',
       opacity: 0.5,
     },
+
     navList: {
       display: 'flex',
       flexDirection: 'column',
       gap: isSmallMobile ? '0.2rem' : '0.3rem',
       alignItems: isSmallMobile ? 'center' : 'flex-start',
     },
+
+    /* 🎯 Style de base pour les liens de navigation */
     link: {
       color: 'rgba(255,255,255,0.35)',
       textDecoration: 'none',
       fontSize: isSmallMobile ? '0.8rem' : isMobile ? '0.85rem' : '0.9rem',
       transition: 'all 0.3s ease',
-      padding: '0.15rem 0',
+      padding: '0.15rem 0.4rem',
       display: 'inline-block',
       position: 'relative',
+      borderRadius: '4px',
     },
-    // Services
+
+    /* 🎯 Style du lien ACTIF (page visitée) */
+    linkActive: {
+      color: '#3b82f6',
+      fontWeight: '600',
+      background: 'rgba(59,130,246,0.1)',
+      paddingLeft: '0.8rem',
+    },
+
     servicesList: {
       display: 'flex',
       flexDirection: 'column',
       gap: isSmallMobile ? '0.2rem' : '0.3rem',
       alignItems: isSmallMobile ? 'center' : 'flex-start',
     },
+
     serviceItem: {
       color: 'rgba(255,255,255,0.25)',
       fontSize: isSmallMobile ? '0.8rem' : isMobile ? '0.85rem' : '0.9rem',
@@ -177,18 +207,20 @@ const Footer = () => {
       display: 'inline-block',
       cursor: 'default',
     },
-    // Contact Section
+
     contactWrapper: {
       display: 'flex',
       flexDirection: 'column',
       gap: isSmallMobile ? '0.3rem' : '0.5rem',
       textAlign: isSmallMobile ? 'center' : 'left',
     },
+
     contactText: {
       color: 'rgba(255,255,255,0.35)',
       fontSize: isSmallMobile ? '0.8rem' : isMobile ? '0.85rem' : '0.9rem',
       lineHeight: '1.6',
     },
+
     contactButton: {
       display: 'inline-flex',
       alignItems: 'center',
@@ -209,7 +241,7 @@ const Footer = () => {
       width: isSmallMobile ? '100%' : 'auto',
       maxWidth: isSmallMobile ? '280px' : 'auto',
     },
-    // Bottom
+
     bottom: {
       display: 'flex',
       flexDirection: isSmallMobile ? 'column' : isMobile ? 'column' : 'row',
@@ -219,6 +251,7 @@ const Footer = () => {
       paddingTop: isSmallMobile ? '1rem' : isMobile ? '1.2rem' : '1.5rem',
       textAlign: isSmallMobile ? 'center' : isMobile ? 'center' : 'left',
     },
+
     bottomLeft: {
       display: 'flex',
       alignItems: 'center',
@@ -226,6 +259,7 @@ const Footer = () => {
       flexWrap: 'wrap',
       justifyContent: 'center',
     },
+
     contactItem: {
       display: 'flex',
       alignItems: 'center',
@@ -235,17 +269,21 @@ const Footer = () => {
       textDecoration: 'none',
       transition: 'color 0.3s ease',
     },
+
     contactIcon: {
       fontSize: isSmallMobile ? '0.6rem' : isMobile ? '0.65rem' : '0.7rem',
       color: 'rgba(255,255,255,0.15)',
     },
+
     bottomText: {
       color: 'rgba(255,255,255,0.2)',
       fontSize: isSmallMobile ? '0.65rem' : isMobile ? '0.7rem' : '0.8rem',
     },
+
     bottomHighlight: {
       color: 'rgba(255,255,255,0.5)',
     },
+
     bottomLinks: {
       display: 'flex',
       gap: isSmallMobile ? '0.8rem' : isMobile ? '1rem' : '1.5rem',
@@ -253,36 +291,38 @@ const Footer = () => {
       flexWrap: 'wrap',
       justifyContent: 'center',
     },
+
     bottomLink: {
       color: 'rgba(255,255,255,0.2)',
       textDecoration: 'none',
       fontSize: isSmallMobile ? '0.65rem' : isMobile ? '0.7rem' : '0.8rem',
       transition: 'color 0.3s ease',
     },
+
+    /* 🎯 Bouton retour en haut */
     scrollBtn: {
-      background: 'rgba(255,255,255,0.03)',
-      border: '1px solid rgba(255,255,255,0.05)',
-      color: 'rgba(255,255,255,0.3)',
-      width: isSmallMobile ? '30px' : isMobile ? '33px' : '36px',
-      height: isSmallMobile ? '30px' : isMobile ? '33px' : '36px',
+      background: 'rgba(59,130,246,0.1)',
+      border: '1px solid rgba(59,130,246,0.25)',
+      color: '#3b82f6',
+      width: isSmallMobile ? '34px' : isMobile ? '37px' : '40px',
+      height: isSmallMobile ? '34px' : isMobile ? '37px' : '40px',
       borderRadius: '50%',
       cursor: 'pointer',
       transition: 'all 0.3s ease',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      fontSize: isSmallMobile ? '0.6rem' : isMobile ? '0.7rem' : '0.8rem',
+      fontSize: isSmallMobile ? '0.7rem' : isMobile ? '0.8rem' : '0.9rem',
       padding: 0,
     },
   };
 
+  /* 🎯 Réseaux sociaux : LinkedIn, Instagram, WhatsApp, GitHub */
   const socialData = [
     { name: 'LinkedIn', icon: FaLinkedin, url: 'https://www.linkedin.com/in/siham-lakmichi', color: '#0077b5' },
-    { name: 'GitHub', icon: FaGithub, url: 'https://github.com', color: '#ffffff' },
-    { name: 'Twitter', icon: FaTwitter, url: 'https://twitter.com', color: '#1DA1F2' },
     { name: 'Instagram', icon: FaInstagram, url: 'https://www.instagram.com/siham_lakmichi', color: '#e4405f' },
     { name: 'WhatsApp', icon: FaWhatsapp, url: 'https://wa.me/212601263349', color: '#25d366' },
-    { name: 'YouTube', icon: FaYoutube, url: 'https://youtube.com', color: '#FF0000' },
+    { name: 'GitHub', icon: FaGithub, url: 'https://github.com', color: '#ffffff' },
   ];
 
   const navLinks = [
@@ -307,24 +347,27 @@ const Footer = () => {
     <footer style={styles.footer}>
       <div style={styles.footerBg}></div>
       <div style={styles.footerBg2}></div>
-      
+
       <div style={styles.container}>
         {/* Top Section */}
         <div style={styles.top}>
           {/* Brand */}
           <div style={styles.brand}>
             <Link to="/" style={styles.logo}>
-              <div style={styles.logoIcon}><FaCode /></div>
+              {/* 🎯 Logo dans un cercle */}
+              <div style={styles.logoImgWrapper}>
+                <img src="/logo.png" alt="logo" style={styles.logoImg} />
+              </div>
               <span style={styles.logoText}>
                 SI<span style={styles.logoAccent}>.</span>HAM
               </span>
             </Link>
             <p style={styles.description}>
-              Technicienne Spécialisée en Développement Web. 
+              Technicienne Spécialisée en Développement Web.
               Passionnée par la création d'applications modernes et innovantes.
             </p>
             <div style={styles.socialCompact}>
-              {socialData.slice(0, isSmallMobile ? 3 : isMobile ? 4 : 4).map((social) => (
+              {socialData.map((social) => (
                 <a
                   key={social.name}
                   href={social.url}
@@ -332,18 +375,18 @@ const Footer = () => {
                   rel="noopener noreferrer"
                   style={styles.socialCompactLink}
                   onMouseEnter={(e) => {
-                    e.target.style.background = social.color;
-                    e.target.style.color = '#ffffff';
-                    e.target.style.borderColor = social.color;
-                    e.target.style.transform = 'translateY(-3px)';
-                    e.target.style.boxShadow = `0 4px 15px ${social.color}40`;
+                    e.currentTarget.style.background = social.color;
+                    e.currentTarget.style.color = '#ffffff';
+                    e.currentTarget.style.borderColor = social.color;
+                    e.currentTarget.style.transform = 'translateY(-3px)';
+                    e.currentTarget.style.boxShadow = `0 4px 15px ${social.color}40`;
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.background = 'rgba(255,255,255,0.03)';
-                    e.target.style.color = 'rgba(255,255,255,0.4)';
-                    e.target.style.borderColor = 'rgba(255,255,255,0.05)';
-                    e.target.style.transform = 'translateY(0)';
-                    e.target.style.boxShadow = 'none';
+                    e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
+                    e.currentTarget.style.color = 'rgba(255,255,255,0.5)';
+                    e.currentTarget.style.borderColor = 'rgba(255,255,255,0.05)';
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = 'none';
                   }}
                 >
                   <social.icon />
@@ -357,21 +400,29 @@ const Footer = () => {
             <h4 style={styles.sectionTitle}>Navigation</h4>
             <div style={styles.navList}>
               {navLinks.map((link) => (
-                <Link
+                <NavLink
                   key={link.name}
                   to={link.path}
-                  style={styles.link}
+                  end={link.path === '/'}
+                  style={({ isActive }) => ({
+                    ...styles.link,
+                    ...(isActive ? styles.linkActive : {}),
+                  })}
                   onMouseEnter={(e) => {
-                    e.target.style.color = '#ffffff';
-                    e.target.style.transform = 'translateX(5px)';
+                    if (location.pathname !== link.path) {
+                      e.currentTarget.style.color = '#ffffff';
+                      e.currentTarget.style.transform = 'translateX(5px)';
+                    }
                   }}
                   onMouseLeave={(e) => {
-                    e.target.style.color = 'rgba(255,255,255,0.35)';
-                    e.target.style.transform = 'translateX(0)';
+                    if (location.pathname !== link.path) {
+                      e.currentTarget.style.color = 'rgba(255,255,255,0.35)';
+                      e.currentTarget.style.transform = 'translateX(0)';
+                    }
                   }}
                 >
                   {link.name}
-                </Link>
+                </NavLink>
               ))}
             </div>
           </div>
@@ -388,7 +439,7 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Contact Section - Remplacer Newsletter */}
+          {/* Contact Section */}
           <div style={styles.contactWrapper}>
             <h4 style={styles.sectionTitle}>Contactez-moi</h4>
             <p style={styles.contactText}>
@@ -398,19 +449,19 @@ const Footer = () => {
               href="tel:+212601263349"
               style={styles.contactButton}
               onMouseEnter={(e) => {
-                e.target.style.background = 'rgba(255,255,255,0.08)';
-                e.target.style.borderColor = 'rgba(255,255,255,0.2)';
-                e.target.style.transform = 'translateY(-2px)';
-                e.target.style.boxShadow = '0 4px 20px rgba(0,0,0,0.3)';
+                e.currentTarget.style.background = 'rgba(59,130,246,0.15)';
+                e.currentTarget.style.borderColor = 'rgba(59,130,246,0.4)';
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = '0 4px 20px rgba(59,130,246,0.2)';
               }}
               onMouseLeave={(e) => {
-                e.target.style.background = 'rgba(255,255,255,0.03)';
-                e.target.style.borderColor = 'rgba(255,255,255,0.1)';
-                e.target.style.transform = 'translateY(0)';
-                e.target.style.boxShadow = 'none';
+                e.currentTarget.style.background = 'rgba(255,255,255,0.03)';
+                e.currentTarget.style.borderColor = 'rgba(255,255,255,0.1)';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'none';
               }}
             >
-              <FaPhone /> +212 6 01263349
+              <FaPhone /> +212 6 01 26 33 49
             </a>
           </div>
         </div>
@@ -421,19 +472,19 @@ const Footer = () => {
             <span style={styles.contactItem}>
               <FaMapMarker style={styles.contactIcon} /> Kénitra, Maroc
             </span>
-            <a 
-              href="tel:+212601263349" 
+            <a
+              href="tel:+212601263349"
               style={styles.contactItem}
-              onMouseEnter={(e) => e.target.style.color = 'rgba(255,255,255,0.5)'}
-              onMouseLeave={(e) => e.target.style.color = 'rgba(255,255,255,0.2)'}
+              onMouseEnter={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.5)'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.2)'}
             >
               <FaPhone style={styles.contactIcon} /> +212 6 01 26 33 49
             </a>
-            <a 
+            <a
               href="mailto:sihamlakmichi123@gmail.com"
               style={styles.contactItem}
-              onMouseEnter={(e) => e.target.style.color = 'rgba(255,255,255,0.5)'}
-              onMouseLeave={(e) => e.target.style.color = 'rgba(255,255,255,0.2)'}
+              onMouseEnter={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.5)'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.2)'}
             >
               <FaEnvelope style={styles.contactIcon} /> sihamlakmichi123@gmail.com
             </a>
@@ -443,36 +494,42 @@ const Footer = () => {
           </div>
 
           <div style={styles.bottomLinks}>
-            <a 
-              href="#" 
+            <a
+              href="#"
               style={styles.bottomLink}
-              onMouseEnter={(e) => e.target.style.color = 'rgba(255,255,255,0.5)'}
-              onMouseLeave={(e) => e.target.style.color = 'rgba(255,255,255,0.2)'}
+              onMouseEnter={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.5)'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.2)'}
             >
               Mentions légales
             </a>
-            <a 
-              href="#" 
+            <a
+              href="#"
               style={styles.bottomLink}
-              onMouseEnter={(e) => e.target.style.color = 'rgba(255,255,255,0.5)'}
-              onMouseLeave={(e) => e.target.style.color = 'rgba(255,255,255,0.2)'}
+              onMouseEnter={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.5)'}
+              onMouseLeave={(e) => e.currentTarget.style.color = 'rgba(255,255,255,0.2)'}
             >
               Confidentialité
             </a>
-            <button 
+
+            {/* 🎯 Bouton retour en haut */}
+            <button
               onClick={scrollToTop}
               style={styles.scrollBtn}
+              aria-label="Retour en haut"
+              title="Retour en haut"
               onMouseEnter={(e) => {
-                e.target.style.background = 'rgba(255,255,255,0.08)';
-                e.target.style.color = '#ffffff';
-                e.target.style.borderColor = 'rgba(255,255,255,0.15)';
-                e.target.style.transform = 'translateY(-3px)';
+                e.currentTarget.style.background = '#3b82f6';
+                e.currentTarget.style.color = '#ffffff';
+                e.currentTarget.style.borderColor = '#3b82f6';
+                e.currentTarget.style.transform = 'translateY(-3px)';
+                e.currentTarget.style.boxShadow = '0 6px 20px rgba(59,130,246,0.4)';
               }}
               onMouseLeave={(e) => {
-                e.target.style.background = 'rgba(255,255,255,0.03)';
-                e.target.style.color = 'rgba(255,255,255,0.3)';
-                e.target.style.borderColor = 'rgba(255,255,255,0.05)';
-                e.target.style.transform = 'translateY(0)';
+                e.currentTarget.style.background = 'rgba(59,130,246,0.1)';
+                e.currentTarget.style.color = '#3b82f6';
+                e.currentTarget.style.borderColor = 'rgba(59,130,246,0.25)';
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = 'none';
               }}
             >
               <FaArrowUp />

@@ -80,30 +80,60 @@ const Header = () => {
     logo: {
       display: 'flex',
       alignItems: 'center',
-      gap: '0.6rem',
+      gap: '0.7rem',
       textDecoration: 'none',
       color: '#fff',
       fontWeight: 700,
       fontSize: isMobile ? '1.2rem' : '1.5rem',
     },
 
-    logoImg: {
-      width: isMobile ? 32 : 40,
-      height: isMobile ? 32 : 40,
-      objectFit: 'contain',
-      borderRadius: 6,
+    /* 🎯 Logo dans un cercle (même design que About) */
+    logoImgWrapper: {
+      width: isMobile ? 38 : 46,
+      height: isMobile ? 38 : 46,
+      borderRadius: '50%',
+      background: 'rgba(255,255,255,0.08)',
+      padding: '4px',
+      border: '2px solid rgba(255,255,255,0.15)',
+      boxShadow: '0 4px 15px rgba(0,0,0,0.25)',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      overflow: 'hidden',
+      transition: 'all 0.3s ease',
+      flexShrink: 0,
     },
 
-    logoDot: { color: '#888' },
+    logoImg: {
+      width: '100%',
+      height: '100%',
+      objectFit: 'contain',
+      borderRadius: '50%',
+      display: 'block',
+    },
+
+    logoDot: { color: '#3b82f6' },
 
     nav: {
       display: isMobile ? 'none' : 'flex',
-      gap: '2rem',
+      gap: '1rem',
+      alignItems: 'center',
     },
 
     link: {
       color: '#aaa',
       textDecoration: 'none',
+      padding: '0.4rem 0.8rem',
+      borderRadius: '6px',
+      transition: 'all 0.3s ease',
+      fontSize: '0.95rem',
+    },
+
+    linkActive: {
+      color: '#fff',
+      fontWeight: 600,
+      background: 'rgba(59, 130, 246, 0.15)',
+      boxShadow: 'inset 0 -2px 0 #3b82f6',
     },
 
     hamburger: {
@@ -145,6 +175,17 @@ const Header = () => {
       color: '#fff',
       textDecoration: 'none',
       fontSize: '1.1rem',
+      padding: '0.6rem 0.9rem',
+      borderRadius: '6px',
+      transition: 'all 0.3s ease',
+    },
+
+    mobileLinkActive: {
+      color: '#3b82f6',
+      fontWeight: 700,
+      background: 'rgba(59, 130, 246, 0.12)',
+      borderLeft: '4px solid #3b82f6',
+      paddingLeft: '1.2rem',
     },
   };
 
@@ -154,9 +195,11 @@ const Header = () => {
       <header style={styles.header}>
         <div style={styles.container}>
 
-          {/* LOGO */}
+          {/* LOGO avec cercle */}
           <Link to="/" style={styles.logo}>
-            <img src="/logo.png" alt="logo" style={styles.logoImg} />
+            <div style={styles.logoImgWrapper}>
+              <img src="/logo.png" alt="logo" style={styles.logoImg} />
+            </div>
             <span>
               SI<span style={styles.logoDot}>.</span>HAM
             </span>
@@ -166,7 +209,15 @@ const Header = () => {
           {!isMobile && (
             <nav style={styles.nav}>
               {navLinks.map((l) => (
-                <NavLink key={l.path} to={l.path} style={styles.link}>
+                <NavLink
+                  key={l.path}
+                  to={l.path}
+                  end={l.path === '/'}
+                  style={({ isActive }) => ({
+                    ...styles.link,
+                    ...(isActive ? styles.linkActive : {}),
+                  })}
+                >
                   {l.label}
                 </NavLink>
               ))}
@@ -194,7 +245,11 @@ const Header = () => {
             <NavLink
               key={l.path}
               to={l.path}
-              style={styles.mobileLink}
+              end={l.path === '/'}
+              style={({ isActive }) => ({
+                ...styles.mobileLink,
+                ...(isActive ? styles.mobileLinkActive : {}),
+              })}
               onClick={() => setIsMenuOpen(false)}
             >
               {l.label}

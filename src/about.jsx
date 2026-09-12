@@ -27,10 +27,17 @@ const About = () => {
       textAlign: 'center',
       marginBottom: 'clamp(1.5rem, 3vw, 2rem)',
     },
-    avatar: {
-      fontSize: 'clamp(3rem, 6vw, 4rem)',
-      marginBottom: 'clamp(0.3rem, 1vw, 0.5rem)',
+    logo: {
+      width: 'clamp(80px, 12vw, 110px)',
+      height: 'clamp(80px, 12vw, 110px)',
+      objectFit: 'contain',
+      borderRadius: '50%',
       display: 'block',
+      margin: '0 auto clamp(0.8rem, 1.5vw, 1rem)',
+      background: '#f5f7fa',
+      padding: '0.5rem',
+      border: '2px solid #e8e8ec',
+      boxShadow: '0 4px 15px rgba(0,0,0,0.06)',
     },
     title: {
       fontSize: 'clamp(1.5rem, 4vw, 2rem)',
@@ -124,7 +131,7 @@ const About = () => {
     <div style={styles.container}>
       <div style={styles.card}>
         <div style={styles.header}>
-          <span style={styles.avatar}>👩‍💻</span>
+          <img src="/logo.png" alt="Logo Siham" style={styles.logo} />
           <h1 style={styles.title}>Lakmichi Siham</h1>
           <p style={styles.role}>Technicienne Spécialisée - OFPPT</p>
         </div>

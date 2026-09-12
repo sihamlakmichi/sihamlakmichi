@@ -25,7 +25,6 @@ const Projects = () => {
     return () => window.removeEventListener('resize', handleResize);
   }, []);
 
-  // Bloquer le scroll quand la modale est ouverte
   useEffect(() => {
     if (modalProject) {
       document.body.style.overflow = 'hidden';
@@ -117,7 +116,6 @@ const Projects = () => {
     }
   ];
 
-  // Filtrage uniquement par recherche
   const filtered = projects.filter(p =>
     p.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
     p.description.toLowerCase().includes(searchTerm.toLowerCase())
@@ -186,7 +184,7 @@ const Projects = () => {
     return () => window.removeEventListener('keydown', handleKey);
   }, [modalProject]);
 
-  // ✅ CSS animations - cartes TOUJOURS VISIBLES, pas de fade
+  // ✅ CSS animations
   const animationStyles = `
     @keyframes fadeInDown {
       from { opacity: 0; transform: translateY(-30px); }
@@ -203,20 +201,19 @@ const Projects = () => {
       to { opacity: 1; transform: scale(1); }
     }
 
-    /* ✅ NOUVELLE ANIMATION : brillance qui traverse la carte */
     @keyframes shimmer {
       0% { left: -100%; }
       100% { left: 200%; }
     }
 
-    /* ✅ NOUVELLE ANIMATION : bordure lumineuse qui tourne */
     @keyframes borderGlow {
-      0%, 100% { 
-        box-shadow: 0 5px 20px rgba(0,0,0,0.08);
-      }
-      50% { 
-        box-shadow: 0 5px 25px rgba(108, 92, 231, 0.25);
-      }
+      0%, 100% { box-shadow: 0 5px 20px rgba(0,0,0,0.08); }
+      50% { box-shadow: 0 5px 25px rgba(108, 92, 231, 0.25); }
+    }
+
+    @keyframes pulseArrow {
+      0%, 100% { opacity: 0.5; transform: translateX(0); }
+      50% { opacity: 1; transform: translateX(5px); }
     }
 
     .projects-title {
@@ -224,7 +221,6 @@ const Projects = () => {
       animation: gradientShift 4s ease infinite, fadeInDown 0.8s ease;
     }
 
-    /* ✅ Cartes : toujours visibles, pas d'opacity 0 */
     .project-card {
       animation: borderGlow 3s ease-in-out infinite;
     }
@@ -234,7 +230,6 @@ const Projects = () => {
       position: relative;
     }
 
-    /* ✅ Effet brillance sur l'image au survol desktop */
     .project-img-wrapper::after {
       content: '';
       position: absolute;
@@ -242,12 +237,7 @@ const Projects = () => {
       left: -100%;
       width: 60%;
       height: 100%;
-      background: linear-gradient(
-        90deg,
-        transparent,
-        rgba(255, 255, 255, 0.4),
-        transparent
-      );
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
       transform: skewX(-20deg);
       pointer-events: none;
     }
@@ -274,12 +264,10 @@ const Projects = () => {
       transition: transform 0.25s ease, color 0.25s ease;
     }
 
+    /* ✅ FLÈCHES INVISIBLES par défaut */
     .nav-btn-anim {
-      transition: transform 0.25s ease, background 0.25s ease;
-    }
-
-    .nav-btn-anim:active {
-      transform: translateY(-50%) scale(0.95) !important;
+      opacity: 0 !important;
+      transition: opacity 0.3s ease, color 0.3s ease, transform 0.3s ease !important;
     }
 
     .dot-anim {
@@ -291,6 +279,11 @@ const Projects = () => {
       box-shadow: 0 0 10px rgba(108, 92, 231, 0.6);
     }
 
+    /* ✅ Indication swipe sur mobile */
+    .swipe-hint {
+      animation: pulseArrow 1.5s ease-in-out infinite;
+    }
+
     /* ✅ HOVER UNIQUEMENT sur desktop */
     @media (hover: hover) and (pointer: fine) {
       .project-card:hover {
@@ -299,7 +292,6 @@ const Projects = () => {
         transition: transform 0.35s ease, box-shadow 0.35s ease;
       }
 
-      /* ✅ Brillance traverse l'image au survol */
       .project-card:hover .project-img-wrapper::after {
         animation: shimmer 0.8s ease;
       }
@@ -318,10 +310,14 @@ const Projects = () => {
         color: #6c5ce7 !important;
       }
 
+      /* ✅ Flèches apparaissent au survol de la zone image */
+      .image-container-hover:hover .nav-btn-anim {
+        opacity: 1 !important;
+      }
+
       .nav-btn-anim:hover {
-        transform: translateY(-50%) scale(1.15) !important;
-        background: #6c5ce7 !important;
         color: #fff !important;
+        transform: translateY(-50%) scale(1.2) !important;
       }
 
       .dot-anim:hover {
@@ -329,8 +325,12 @@ const Projects = () => {
       }
     }
 
-    /* ✅ Feedback tactile sur mobile */
+    /* ✅ Sur mobile : flèches totalement invisibles */
     @media (hover: none) {
+      .nav-btn-anim {
+        opacity: 0 !important;
+      }
+
       .project-card:active {
         transform: scale(0.98);
         transition: transform 0.15s ease;
@@ -472,7 +472,8 @@ const Projects = () => {
       justifyContent: 'space-between',
       alignItems: 'center',
       flexShrink: 0,
-      background: '#fff'
+      background: '#fff',
+      zIndex: 5
     },
 
     modalTitle: { margin: 0, fontSize: '1.1rem', color: '#2d3436' },
@@ -489,6 +490,7 @@ const Projects = () => {
       touchAction: 'manipulation'
     },
 
+    // ✅ Conteneur fixe (ne scrolle pas)
     imageContainer: {
       position: 'relative',
       background: '#000',
@@ -498,37 +500,49 @@ const Projects = () => {
       overflow: 'hidden'
     },
 
-    modalImg: {
+    // ✅ Zone de scroll pour l'image
+    imageScrollArea: {
       position: 'absolute',
-      top: 0,
-      left: 0,
-      width: '100%',
-      height: '100%',
+      inset: 0,
+      overflow: 'auto',
+      WebkitOverflowScrolling: 'touch',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center'
+    },
+
+    modalImg: {
+      maxWidth: '100%',
+      maxHeight: '100%',
+      width: 'auto',
+      height: 'auto',
       objectFit: 'contain',
       userSelect: 'none',
       WebkitUserSelect: 'none',
-      display: 'block'
+      display: 'block',
+      margin: 'auto'
     },
 
+    // ✅ Flèches invisibles par défaut (opacity 0 en CSS)
     navBtn: {
       position: 'absolute',
       top: '50%',
       transform: 'translateY(-50%)',
-      background: 'rgba(255,255,255,0.9)',
+      background: 'transparent',
       border: 'none',
       borderRadius: '50%',
-      width: isSmallMobile ? '46px' : '42px',
-      height: isSmallMobile ? '46px' : '42px',
+      width: isSmallMobile ? '50px' : '60px',
+      height: isSmallMobile ? '50px' : '60px',
       cursor: 'pointer',
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      fontSize: isSmallMobile ? '1.2rem' : '1rem',
-      color: '#333',
-      boxShadow: '0 2px 10px rgba(0,0,0,0.3)',
-      zIndex: 2,
+      fontSize: isSmallMobile ? '1.6rem' : '1.8rem',
+      color: '#fff',
+      zIndex: 10,
       touchAction: 'manipulation',
-      userSelect: 'none'
+      userSelect: 'none',
+      textShadow: '0 2px 10px rgba(0,0,0,0.9)'
     },
 
     dotsContainer: {
@@ -537,7 +551,8 @@ const Projects = () => {
       gap: '8px',
       padding: '15px',
       background: '#fff',
-      flexShrink: 0
+      flexShrink: 0,
+      zIndex: 5
     },
 
     dot: (isActive) => ({
@@ -560,7 +575,23 @@ const Projects = () => {
       padding: '4px 10px',
       borderRadius: '15px',
       fontSize: '0.8rem',
-      zIndex: 3
+      zIndex: 10
+    },
+
+    // ✅ Indication swipe mobile
+    swipeHint: {
+      position: 'absolute',
+      bottom: '50px',
+      left: '50%',
+      transform: 'translateX(-50%)',
+      color: 'rgba(255,255,255,0.7)',
+      fontSize: '0.75rem',
+      background: 'rgba(0,0,0,0.5)',
+      padding: '4px 14px',
+      borderRadius: '15px',
+      zIndex: 10,
+      pointerEvents: 'none',
+      letterSpacing: '2px'
     }
   };
 
@@ -592,18 +623,9 @@ const Projects = () => {
             <div style={styles.empty}>Aucun projet trouvé 😕</div>
           ) : (
             filtered.map((p) => (
-              <div
-                key={p.id}
-                className="project-card"
-                style={styles.card}
-              >
+              <div key={p.id} className="project-card" style={styles.card}>
                 <div className="project-img-wrapper" style={styles.imgWrapper}>
-                  <img
-                    src={p.image}
-                    className="project-img"
-                    style={styles.img}
-                    alt={p.title}
-                  />
+                  <img src={p.image} className="project-img" style={styles.img} alt={p.title} />
                 </div>
 
                 <div style={styles.content}>
@@ -622,14 +644,7 @@ const Projects = () => {
                         <FaGithub /> GitHub
                       </a>
                     ) : (
-                      <span
-                        style={{
-                          ...styles.btn,
-                          background: '#eee',
-                          color: '#666',
-                          cursor: 'default'
-                        }}
-                      >
+                      <span style={{ ...styles.btn, background: '#eee', color: '#666', cursor: 'default' }}>
                         🔒 Privé
                       </span>
                     )}
@@ -689,27 +704,31 @@ const Projects = () => {
               </button>
             </div>
 
-            <div
-              style={styles.imageContainer}
-              onTouchStart={onTouchStart}
-              onTouchMove={onTouchMove}
-              onTouchEnd={onTouchEnd}
-            >
-              <img
-                key={`${modalProject.id}-${currentImageIndex}`}
-                src={modalProject.images[currentImageIndex]}
-                alt={`${modalProject.title} ${currentImageIndex + 1}`}
-                style={styles.modalImg}
-                loading="eager"
-                decoding="async"
-              />
+            <div className="image-container-hover" style={styles.imageContainer}>
+              {/* ✅ Zone de scroll avec swipe */}
+              <div
+                style={styles.imageScrollArea}
+                onTouchStart={onTouchStart}
+                onTouchMove={onTouchMove}
+                onTouchEnd={onTouchEnd}
+              >
+                <img
+                  key={`${modalProject.id}-${currentImageIndex}`}
+                  src={modalProject.images[currentImageIndex]}
+                  alt={`${modalProject.title} ${currentImageIndex + 1}`}
+                  style={styles.modalImg}
+                  loading="eager"
+                  decoding="async"
+                />
+              </div>
 
+              {/* ✅ Flèches invisibles par défaut */}
               {modalProject.images.length > 1 && (
                 <>
                   <button
                     type="button"
                     className="nav-btn-anim"
-                    style={{ ...styles.navBtn, left: '10px' }}
+                    style={{ ...styles.navBtn, left: '5px' }}
                     onClick={(e) => { e.stopPropagation(); prevImage(); }}
                     onTouchStart={(e) => e.stopPropagation()}
                     aria-label="Précédent"
@@ -720,7 +739,7 @@ const Projects = () => {
                   <button
                     type="button"
                     className="nav-btn-anim"
-                    style={{ ...styles.navBtn, right: '10px' }}
+                    style={{ ...styles.navBtn, right: '5px' }}
                     onClick={(e) => { e.stopPropagation(); nextImage(); }}
                     onTouchStart={(e) => e.stopPropagation()}
                     aria-label="Suivant"
@@ -731,6 +750,13 @@ const Projects = () => {
                   <div style={styles.counter}>
                     {currentImageIndex + 1} / {modalProject.images.length}
                   </div>
+
+                  {/* ✅ Indication swipe sur mobile uniquement */}
+                  {isMobile && (
+                    <div className="swipe-hint" style={styles.swipeHint}>
+                      ← SWIPE →
+                    </div>
+                  )}
                 </>
               )}
             </div>
